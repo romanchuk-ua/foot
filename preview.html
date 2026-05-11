@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Google Play</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Roboto',sans-serif;
+}
+
+body{
+    background:#ffffff;
+    color:#202124;
+}
+
+/* TOPBAR */
+
+.topbar{
+    width:100%;
+    height:64px;
+    display:flex;
+    align-items:center;
+    padding:0 22px;
+    border-bottom:1px solid #e6e6e6;
+    background:white;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.play-logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:23px;
+    font-weight:500;
+    color:#5f6368;
+}
+
+.real-play-logo{
+    width:32px;
+    height:32px;
+    object-fit:contain;
+}
+
+/* MAIN */
+
+.container{
+    max-width:980px;
+    margin:auto;
+    padding:40px 20px;
+}
+
+.app-card{
+    display:flex;
+    gap:28px;
+    align-items:flex-start;
+    background:white;
+    border-radius:28px;
+    padding:30px;
+    border:1px solid #ededed;
+    box-shadow:0 6px 22px rgba(0,0,0,0.06);
+}
+
+.app-icon{
+    width:150px;
+    height:150px;
+    border-radius:32px;
+    object-fit:cover;
+    background:#ddd;
+}
+
+.app-info{
+    flex:1;
+}
+
+.app-title{
+    font-size:38px;
+    font-weight:500;
+    margin-bottom:8px;
+}
+
+.app-dev{
+    color:#01875f;
+    font-size:18px;
+    margin-bottom:22px;
+}
+
+/* CATEGORIES */
+
+.categories{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:28px;
+}
+
+.category{
+    background:#f1f3f4;
+    padding:10px 16px;
+    border-radius:999px;
+    font-size:14px;
+    font-weight:500;
+    color:#3c4043;
+}
+
+/* STATS */
+
+.stats{
+    display:flex;
+    gap:42px;
+    margin-bottom:28px;
+}
+
+.stat{
+    text-align:center;
+}
+
+.stat-value{
+    font-size:18px;
+    font-weight:500;
+}
+
+.stat-label{
+    margin-top:5px;
+    font-size:13px;
+    color:#5f6368;
+}
+
+/* DESCRIPTION */
+
+.app-description{
+    font-size:16px;
+    line-height:1.7;
+    color:#5f6368;
+    margin-bottom:30px;
+}
+
+/* BUTTON */
+
+.install-btn{
+    border:none;
+    background:#01875f;
+    color:white;
+    padding:15px 36px;
+    border-radius:999px;
+    font-size:17px;
+    font-weight:500;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.install-btn:hover{
+    background:#017152;
+    transform:scale(1.03);
+}
+
+.install-btn:active{
+    transform:scale(0.97);
+}
+
+/* GALLERY */
+
+.gallery{
+    margin-top:42px;
+    display:flex;
+    gap:18px;
+    overflow-x:auto;
+    padding-bottom:10px;
+}
+
+.gallery::-webkit-scrollbar{
+    height:10px;
+}
+
+.gallery::-webkit-scrollbar-thumb{
+    background:#d0d0d0;
+    border-radius:999px;
+}
+
+.screen-image{
+    min-width:230px;
+    height:460px;
+    object-fit:cover;
+    border-radius:24px;
+    border:1px solid #ddd;
+    box-shadow:0 4px 14px rgba(0,0,0,0.12);
+}
+
+/* FOOTER */
+
+footer{
+    margin-top:60px;
+    padding-bottom:30px;
+    text-align:center;
+    color:#777;
+    font-size:14px;
+}
+
+/* MOBILE */
+
+@media(max-width:800px){
+
+    .app-card{
+        flex-direction:column;
+        align-items:center;
+        text-align:center;
+    }
+
+    .stats{
+        justify-content:center;
+        flex-wrap:wrap;
+    }
+
+    .categories{
+        justify-content:center;
+    }
+
+}
+
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+
+<div class="topbar">
+
+    <div class="play-logo">
+        <img src="playmarket.png" class="real-play-logo">
+        Google Play
+    </div>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="container">
+
+    <div class="app-card">
+
+        <!-- APP ICON -->
+
+        <img src="upl.png" class="app-icon">
+
+        <!-- INFO -->
+
+        <div class="app-info">
+
+            <div class="app-title">
+                Симулятор Тренера УПЛ
+            </div>
+
+            <div class="app-dev">
+                UPL Interactive
+            </div>
+
+            <!-- CATEGORIES -->
+
+            <div class="categories">
+
+                <div class="category">Симулятор</div>
+                <div class="category">Футбол</div>
+                <div class="category">Ігри</div>
+
+            </div>
+
+            <!-- STATS -->
+
+            <div class="stats">
+
+                <div class="stat">
+                    <div class="stat-value">4.9 ★</div>
+                    <div class="stat-label">Оцінка</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-value">100 тис.+</div>
+                    <div class="stat-label">Завантажень</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-value">3+</div>
+                    <div class="stat-label">Вік</div>
+                </div>
+
+            </div>
+
+            <!-- DESCRIPTION -->
+
+            <div class="app-description">
+
+                Стань легендарним тренером клубу УПЛ.
+                Купуй футболістів, створюй тактики,
+                розвивай команду та вигравай чемпіонати.
+                Повний футбольний менеджмент прямо у твоєму телефоні ⚽
+
+            </div>
+
+            <!-- BUTTON -->
+
+            <button class="install-btn" id="downloadBtn">
+                Встановити
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- SCREENSHOTS -->
+
+    <div class="gallery">
+
+        <img src="1.png" class="screen-image">
+        <img src="2.png" class="screen-image">
+        <img src="3.png" class="screen-image">
+        <img src="4.png" class="screen-image">
+
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+
+<footer>
+    © 2026 Google Play
+</footer>
+
+<script>
+
+/* DOWNLOAD APK */
+
+document.getElementById("downloadBtn").addEventListener("click", () => {
+
+    const link = document.createElement("a");
+
+    link.href = "upl-simulator.apk";
+    link.download = "upl-simulator.apk";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+});
+
+</script>
+
+</body>
+</html>
