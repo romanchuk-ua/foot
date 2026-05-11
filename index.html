@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>UPL Coach PRO - Real Engine</title>
+    <title>UPL Coach PRO - Ultra Real Engine</title>
     <style>
         :root {
             --bg-color: #f0f4f8; --container-bg: #ffffff; --primary: #0f8574; --primary-dark: #0a6659;
@@ -12,7 +12,7 @@
             --bottom-nav-h: 65px; --home-c: #3498db; --away-c: #e74c3c;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; user-select: none; -webkit-user-select: none; }
-        body { background-color: var(--bg-color); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        body { background-color: var(--bg-color); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; flex-direction: column; touch-action: manipulation; }
         .screen { display: none; height: 100%; overflow-y: auto; padding: 20px; padding-bottom: calc(var(--bottom-nav-h) + 20px); }
         .active-screen { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
@@ -42,7 +42,7 @@
         .nav-icon { font-size: 22px; margin-bottom: 2px; }
         
         .squad-top-controls { display: flex; gap: 5px; margin-bottom: 10px; }
-        .squad-btn { flex: 1; padding: 8px 2px; font-size: 12px; text-align: center; border-radius: 6px; background: white; border: 1px solid var(--border); font-weight: bold; color: var(--text-main); }
+        .squad-btn { flex: 1; padding: 6px 2px; font-size: 11px; text-align: center; border-radius: 6px; background: white; border: 1px solid var(--border); font-weight: bold; color: var(--text-main); }
         .pitch { background: var(--pitch-green); border-radius: 10px; position: relative; border: 2px solid white; overflow: hidden; height: 450px; margin-bottom: 15px; touch-action: none; }
         .pitch-line { position: absolute; border: 2px solid var(--pitch-lines); }
         .p-center-circle { width: 80px; height: 80px; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); }
@@ -50,7 +50,7 @@
         .p-pen-top { width: 180px; height: 70px; top: 0; left: 50%; transform: translateX(-50%); border-top: none; }
         .p-pen-bot { width: 180px; height: 70px; bottom: 0; left: 50%; transform: translateX(-50%); border-bottom: none; }
         
-        .player-slot { position: absolute; transform: translate(-50%, -50%); width: 55px; display: flex; flex-direction: column; align-items: center; z-index: 2; touch-action: none; }
+        .player-slot { position: absolute; transform: translate(-50%, -50%); width: 55px; display: flex; flex-direction: column; align-items: center; z-index: 2; touch-action: none; cursor: grab; }
         .player-card { background: #e0e0e0; border: 2px solid #bdc3c7; border-radius: 4px; width: 100%; padding: 2px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.3); position: relative; transition: border-color 0.2s; pointer-events: none; }
         .player-slot.dragging { opacity: 0.5; z-index: 100; }
         .player-slot.drag-over .player-card { border-color: var(--primary); transform: scale(1.05); }
@@ -65,8 +65,8 @@
         .stamina-fill { height: 100%; background: var(--success); transition: width 0.3s; }
         .cap-badge { position: absolute; top: -6px; left: -6px; background: var(--primary); color: white; border-radius: 50%; width: 14px; height: 14px; font-size: 10px; font-weight: bold; display: flex; align-items: center; justify-content: center; z-index: 5; }
         .inj-badge { position: absolute; top: -6px; right: -6px; background: var(--danger); color: white; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; font-weight: bold; display: flex; align-items: center; justify-content: center; z-index: 6; }
-        .subs-container { background: var(--container-bg); border-radius: 10px; padding: 10px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; min-height: 80px; touch-action: none; }
-        #drag-ghost { position: fixed; pointer-events: none; z-index: 9999; opacity: 0.8; transform: translate(-50%, -50%); display: none; }
+        .subs-container { background: var(--container-bg); border-radius: 10px; padding: 10px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; min-height: 80px; touch-action: none; position: relative; z-index: 10; }
+        #drag-ghost { position: fixed; pointer-events: none; z-index: 9999; opacity: 0.8; transform: translate(-50%, -50%); display: none; width: 55px; }
         
         /* MATCH 2D SIMULATION UI */
         #match-screen { display: none; flex-direction: column; height: 100vh; background: var(--bg-color); z-index: 150; position: fixed; top: 0; left: 0; width: 100%; max-width: 600px; left: 50%; transform: translateX(-50%); }
@@ -78,33 +78,40 @@
         .sb-score { font-size: 28px; font-weight: bold; color: var(--primary); display: flex; gap: 10px; }
         .sb-time { font-size: 14px; color: white; font-weight: bold; background: var(--danger); padding: 4px 12px; border-radius: 12px; margin-top: 5px; }
         
-        .pitch-2d-container { flex: 1; position: relative; background: var(--pitch-green); border-top: 2px solid white; border-bottom: 2px solid white; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        .pitch-2d-container { flex: 1; position: relative; background: var(--pitch-green); border-top: 2px solid white; border-bottom: 2px solid white; overflow: visible; display: flex; justify-content: center; align-items: center; }
         .pitch-2d { width: 100%; height: 100%; position: relative; }
-        .p2-line { position: absolute; border: 2px solid rgba(255,255,255,0.4); }
+        .p2-line { position: absolute; border: 2px solid rgba(255,255,255,0.4); z-index: 1; pointer-events: none; }
         .p2-center { width: 80px; height: 80px; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-        .p2-cline { width: 2px; height: 100%; top: 0; left: 50%; background: rgba(255,255,255,0.4); border: none; }
+        .p2-cline { width: 2px; height: 100%; top: 0; left: 50%; background: rgba(255,255,255,0.4); border: none; z-index: 1;}
         .p2-box-l { width: 60px; height: 140px; top: 50%; left: 0; transform: translateY(-50%); border-left: none; }
         .p2-box-r { width: 60px; height: 140px; top: 50%; right: 0; transform: translateY(-50%); border-right: none; }
-        .p2-goal-l { width: 10px; height: 60px; top: 50%; left: 0; transform: translateY(-50%); background: rgba(255,255,255,0.5); position: absolute; }
-        .p2-goal-r { width: 10px; height: 60px; top: 50%; right: 0; transform: translateY(-50%); background: rgba(255,255,255,0.5); position: absolute; }
+        .p2-goal-l { width: 12px; height: 60px; top: 50%; left: -12px; transform: translateY(-50%); background: rgba(255,255,255,0.3); position: absolute; border: 2px solid white; border-right: none; z-index: 1; }
+        .p2-goal-r { width: 12px; height: 60px; top: 50%; right: -12px; transform: translateY(-50%); background: rgba(255,255,255,0.3); position: absolute; border: 2px solid white; border-left: none; z-index: 1; }
         
-        .dot { position: absolute; width: 18px; height: 18px; border-radius: 50%; transform: translate(-50%, -50%); transition: left 0.1s linear, top 0.1s linear; display: flex; justify-content: center; align-items: center; font-size: 9px; font-weight: bold; color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
-        .dot-home { background: var(--home-c); border: 1px solid #fff; z-index: 5;}
-        .dot-away { background: var(--away-c); border: 1px solid #fff; z-index: 5;}
-        .dot-ball { position: absolute; font-size: 14px; z-index: 10; transform: translate(-50%, -50%); transition: left 0.1s linear, top 0.1s linear; line-height: 1; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
+        #speed-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; z-index: 100; border: 1px solid rgba(255,255,255,0.5); }
         
-        .goal-alert { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 40px; font-weight: bold; color: gold; text-shadow: 2px 2px 5px black; z-index: 100; display: none; animation: popIn 0.5s; }
-        @keyframes popIn { 0% { transform: translate(-50%, -50%) scale(0); } 80% { transform: translate(-50%, -50%) scale(1.2); } 100% { transform: translate(-50%, -50%) scale(1); } }
+        .dot { position: absolute; width: 18px; height: 18px; border-radius: 50%; transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center; font-size: 8px; font-weight: bold; color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.5); z-index: 5; }
+        .dot-home { background: var(--home-c); border: 2px solid #fff; }
+        .dot-away { background: var(--away-c); border: 2px solid #fff; }
+        .dot-ball { position: absolute; font-size: 9px; z-index: 10; transform: translate(-50%, -50%); line-height: 1; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
+        
+        .goal-alert { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 32px; font-weight: bold; color: gold; text-shadow: 2px 2px 5px black; z-index: 100; display: none; text-align: center; line-height: 1.2; animation: popIn 0.5s forwards; width: 100%; pointer-events: none;}
+        @keyframes popIn { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 80% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
 
-        .match-events { height: 120px; background: var(--container-bg); overflow-y: auto; padding: 10px; font-size: 13px; border-top: 1px solid var(--border); display: flex; flex-direction: column-reverse; }
-        .event-line { padding: 5px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; gap: 8px; animation: fadeIn 0.3s; }
-        .ev-min { font-weight: bold; color: var(--text-muted); width: 25px; }
+        .match-events { height: 160px; background: var(--container-bg); overflow-y: auto; padding: 10px 15px; font-size: 13px; border-top: 1px solid var(--border); display: flex; flex-direction: column-reverse; gap: 5px; }
+        .event-line { display: flex; align-items: center; gap: 8px; animation: fadeIn 0.3s; width: 100%; border-bottom: 1px solid #f9f9f9; padding-bottom: 3px; }
+        .ev-h { justify-content: flex-start; text-align: left; }
+        .ev-a { justify-content: flex-end; text-align: right; flex-direction: row-reverse; }
+        .ev-n { justify-content: center; text-align: center; }
+        
+        .ev-min { font-weight: bold; color: var(--text-muted); width: 30px; flex-shrink: 0; }
+        .ev-a .ev-min { text-align: right; }
+        .ev-text { flex: 1; }
         .ev-goal { color: var(--success); font-weight: bold; }
-        .ev-y { color: #f39c12; font-weight: bold; }
+        .ev-y { color: #d35400; font-weight: bold; }
         .ev-r { color: var(--danger); font-weight: bold; }
-        .ev-inj { color: var(--danger); }
-        .match-controls { padding: 10px; background: var(--container-bg); display: flex; gap: 10px; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); }
-        .match-controls button { margin: 0; padding: 12px; font-size: 14px; }
+        .ev-inj { color: var(--danger); font-weight: bold; }
+        .ev-var { color: #8e44ad; font-weight: bold; }
         
         .list-row { display: flex; padding: 12px 10px; border-bottom: 1px solid var(--border); background: var(--container-bg); align-items: center; font-size: 14px; border-radius: 8px; margin-bottom: 5px; }
         .t-pos { width: 25px; font-weight: bold; text-align: center; }
@@ -114,7 +121,6 @@
         .modal-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.6); display: none; z-index: 200; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: var(--container-bg); border-radius: 12px; width: 100%; max-width: 400px; padding: 20px; max-height: 80vh; overflow-y: auto; }
         .modal-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: var(--primary); text-align: center; }
-        .market-card { border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; background: white; }
     </style>
 </head>
 <body>
@@ -156,24 +162,25 @@
         </div>
 
         <div id="tab-squad" class="game-tab active-tab">
-            <div id="injury-warning" style="display:none; background:var(--danger); color:white; padding:10px; border-radius:8px; margin-bottom:10px; font-weight:bold; text-align:center; font-size:12px;">
-                🚨 Гравець травмований! Зробіть заміну (перетягніть гравця з лавки), щоб продовжити.
+            <div id="injury-warning" style="display:none; background:var(--danger); color:white; padding:10px; border-radius:8px; margin-bottom:10px; font-weight:bold; text-align:center; font-size:12px; animation: pulseInjured 1s infinite;">
+                🚨 ТРАВМА! Перетягніть гравця з лавки на червоного травмованого!
             </div>
             <div class="squad-top-controls">
                 <div class="squad-btn" onclick="openModal('tactics-modal')">Тактика<br><span id="lbl-tactic" style="color:var(--primary)">4-3-3</span></div>
                 <div class="squad-btn" onclick="openModal('press-modal')">Пресинг<br><span id="lbl-press" style="color:var(--primary)">М'який</span></div>
                 <div class="squad-btn" onclick="openModal('cap-modal')">Капітан<br><span id="lbl-cap" style="color:var(--primary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">Обирається</span></div>
+                <div class="squad-btn">Команда<br><span id="lbl-ovr" style="color:var(--primary); font-size:14px;">OVR: 0</span></div>
             </div>
             <div class="pitch" id="pitch-container">
                 <div class="pitch-line p-center-circle"></div><div class="pitch-line p-center-line"></div>
                 <div class="pitch-line p-pen-top"></div><div class="pitch-line p-pen-bot"></div>
                 <div id="pitch-players"></div>
             </div>
-            <h3 style="font-size:14px; text-align:left; margin-top:10px;">Запасні (Перетягніть для заміни)</h3>
+            <h3 style="font-size:14px; text-align:left; margin-top:10px;">Запасні (Перетягніть)</h3>
             <div class="subs-container" id="subs-players"></div>
             
             <button id="btn-start-match" onclick="initMatch()" style="margin-top: 15px;">Грати Матч</button>
-            <button id="btn-resume-match" onclick="resumeMatch()" style="margin-top: 15px; display:none; background:#e67e22;">Повернутися до матчу</button>
+            <button id="btn-resume-match" onclick="resumeMatchFromSubs()" style="margin-top: 15px; display:none; background:#e67e22;">Повернутися до матчу</button>
         </div>
 
         <div id="tab-table" class="game-tab">
@@ -211,6 +218,7 @@
         </div>
         
         <div class="pitch-2d-container">
+            <div id="speed-btn" onclick="toggleSpeed()">1x</div>
             <div class="pitch-2d" id="sim-pitch">
                 <div class="p2-line p2-center"></div><div class="p2-line p2-cline"></div>
                 <div class="p2-line p2-box-l"></div><div class="p2-line p2-box-r"></div>
@@ -222,10 +230,6 @@
         </div>
         
         <div class="match-events" id="m-events"></div>
-        <div class="match-controls">
-            <button class="secondary" onclick="pauseForTactics()">Заміни / Тактика</button>
-            <button id="m-btn-play" onclick="toggleSimPlay()">Почати тайм</button>
-        </div>
     </div>
 
     <div id="drag-ghost"><div class="player-card" id="ghost-card"></div></div>
@@ -243,7 +247,7 @@
             <div class="modal-title">Інтенсивність пресингу</div>
             <button class="secondary" onclick="setPress(0)">М'який (Економія сил)</button>
             <button class="secondary" onclick="setPress(1)">Інтенсивний (Баланс)</button>
-            <button class="secondary" onclick="setPress(2)">Жорсткий (Втома)</button>
+            <button class="secondary" onclick="setPress(2)">Жорсткий (Швидка втома)</button>
         </div>
     </div>
     <div class="modal-overlay" id="cap-modal" onclick="if(event.target==this)closeModal('cap-modal')">
@@ -260,48 +264,88 @@
             <div class="modal-title" id="ht-title">Перерва</div>
             <div style="font-size:12px; color:var(--text-muted); text-align:center; margin-bottom:10px;">Результати інших матчів</div>
             <div id="ht-scores" style="margin-bottom:15px; max-height:200px; overflow-y:auto;"></div>
-            <button onclick="pauseForTactics()">Зробити заміни</button>
-            <button class="secondary" onclick="resumeMatchFromHT()" id="btn-ht-resume">Продовжити</button>
+            <button class="secondary" onclick="pauseForTactics()" id="btn-ht-sub">Зробити заміни</button>
+            <button onclick="resumeMatchFromHT()" id="btn-ht-resume">Другий тайм</button>
         </div>
     </div>
 
     <script>
+        const SQUADS = {
+            0: [['ВР','Г. Бущан',83,1],['ЗХ','О. Тимчик',79,24],['ЗХ','Д. Попов',78,4],['ЗХ','Т. Михавко',75,32],['ЗХ','В. Дубінчак',77,44],['ПЗ','В. Бражко',80,6],['ПЗ','М. Шапаренко',82,10],['ПЗ','В. Буяльський',81,29],['НП','А. Ярмоленко',80,7],['НП','В. Ванат',79,11],['НП','В. Кабаєв',77,22],['ВР','Р. Нещерет',74,35],['ЗХ','М. Дячук',73,25],['ЗХ','К. Вівчаренко',75,2],['ПЗ','Н. Волошин',76,9],['ПЗ','О. Піхальонок',78,76],['НП','В. Супряга',73,21],['НП','Е. Герреро',76,39]],
+            1: [['ВР','Д. Різник',81,31],['ЗХ','Ю. Конопля',80,26],['ЗХ','М. Матвієнко',82,22],['ЗХ','В. Бондар',78,5],['ЗХ','І. Азаров',76,16],['ПЗ','Т. Степаненко',80,6],['ПЗ','Г. Судаков',84,10],['ПЗ','А. Бондаренко',79,21],['НП','О. Зубков',80,11],['НП','Д. Сікан',78,14],['НП','Кевін',77,37],['ВР','К. Фесюн',72,1],['ЗХ','П. Енріке',75,13],['ЗХ','А. Франьїч',74,4],['ПЗ','Д. Криськів',78,8],['ПЗ','Марлон',76,30],['НП','Л. Траоре',76,2],['НП','Егіналду',75,7]],
+            2: [['ВР','А. Кліщук',73,33],['ЗХ','А. Понєдєльнік',72,7],['ЗХ','О. Романчук',71,3],['ЗХ','Т. Стецьков',72,5],['ЗХ','І. Дібанго',74,55],['ПЗ','Д. Бізімана',73,8],['ПЗ','Ю. Вакулко',72,22],['ПЗ','М. Луньов',70,14],['НП','М. Задерака',73,94],['НП','Д. Аду',74,80],['НП','А. Микитишин',71,11],['ВР','В. Маханьков',68,30],['ЗХ','Р. Бандейра',70,2],['ЗХ','В. Корнієнко',72,9],['ПЗ','Д. Кузик',71,21],['ПЗ','Х. Іліч',72,23],['НП','О. Кожушко',72,78],['НП','Ж. Соса',73,19]],
+            3: [['ВР','О. Кудрик',72,1],['ЗХ','А. Кравченко',71,3],['ЗХ','С. Чоботенко',74,44],['ЗХ','Е. Сарапій',75,5],['ЗХ','А. Смоляков',73,15],['ПЗ','Р. Бабенко',72,8],['ПЗ','Таллес',74,10],['ПЗ','Б. Крушинський',71,77],['НП','О. Гуцуляк',76,11],['НП','Л. Ернандес',73,9],['НП','О. Назаренко',75,7],['ВР','Є. Волинець',74,33],['ЗХ','Л. Тейлор',71,13],['ЗХ','Ж. Майсурадзе',70,2],['ПЗ','Е. Мустафаєв',72,14],['ПЗ','В. Танковський',71,6],['НП','Д. Макуана',74,18],['НП','П. Будківський',72,28]],
+            4: [['ВР','Д. Ледвій',72,23],['ЗХ','О. Сич',74,77],['ЗХ','В. Холод',71,4],['ЗХ','Р. Дідик',72,29],['ЗХ','В. Роман',73,93],['ПЗ','М. Сапуга',73,10],['ПЗ','Д. Підгурський',70,15],['ПЗ','О. Притула',71,22],['НП','І. Квасниця',75,9],['НП','Ю. Климчук',74,11],['НП','Я. Карабін',70,89],['ВР','Ю. Герета',67,1],['ЗХ','Б. Слюбик',73,92],['ЗХ','О. Товарницький',69,3],['ПЗ','Таллес',72,30],['ПЗ','І. Слюсар',69,8],['НП','А. Плюман',72,22],['НП','О. Федор',71,7]],
+            5: [['ВР','Є. Кучеренко',71,21],['ЗХ','І. Путря',70,4],['ЗХ','Х. Саліху',72,5],['ЗХ','Н. Муравський',70,3],['ЗХ','Г. Пасіч',71,11],['ПЗ','М. Яшарі',72,15],['ПЗ','О. Тілль',74,8],['ПЗ','В. Бойко',70,10],['НП','В. Наумець',71,7],['НП','Б. Молло',72,9],['НП','А. Авагімян',71,22],['ВР','Г. Пеньков',68,1],['ЗХ','Д. Норенков',69,17],['ЗХ','О. Каплієнко',70,23],['ПЗ','А. Бар',70,20],['ПЗ','Ш. Дойко',71,6],['НП','Ейнел',72,19],['НП','М. Прядун',70,28]],
+            6: [['ВР','Г. Єрмаков',73,44],['ЗХ','А. Кравченко',71,3],['ЗХ','О. Логінов',72,4],['ЗХ','А. Шабанов',73,5],['ЗХ','Ю. Копіна',71,11],['ПЗ','І. Калюжний',74,6],['ПЗ','Є. Смирний',72,8],['ПЗ','К. Ковалець',75,10],['НП','Жуан Беззера',73,22],['НП','О. Філіппов',74,9],['НП','А. Шулянський',72,17],['ВР','М. Шевченко',70,1],['ЗХ','О. Мартинюк',69,14],['ЗХ','Д. Скорко',70,2],['ПЗ','Д. Шостак',68,7],['ПЗ','М. Костишин',69,18],['НП','В. Калітвінцев',71,21],['НП','Д. Гармаш',70,19]],
+            7: [['ВР','І. Пахолюк',70,1],['ЗХ','В. Лучкевич',73,2],['ЗХ','В. Бондаренко',71,5],['ЗХ','М. Бурда',72,6],['ЗХ','А. Цуріков',72,15],['ПЗ','В. Мілько',71,14],['ПЗ','Є. Демченко',70,8],['ПЗ','П. Оріховський',71,10],['НП','О. Ільїн',70,9],['НП','Д. Безбородько',71,11],['НП','М. Третьяков',72,22],['ВР','В. Горох',66,31],['ЗХ','О. Чорноморець',70,3],['ЗХ','Є. Новак',69,4],['ПЗ','В. Велетень',69,7],['ПЗ','А. Тотовицький',72,17],['НП','Р. Салабай',68,27],['НП','А. Попович',69,19]],
+            8: [['ВР','П. Ісенко',74,51],['ЗХ','І. Крупський',72,27],['ЗХ','І. Пердута',73,4],['ЗХ','Л. Гучек',71,5],['ЗХ','В. Корнієнко',72,9],['ПЗ','О. Скляр',71,6],['ПЗ','А. Челядін',72,38],['ПЗ','Є. Павлюк',70,29],['НП','І. Кане',74,7],['НП','М. Ковталюк',72,11],['НП','С. Мякушко',73,22],['ВР','О. Домолега',65,61],['ЗХ','Д. Ізотов',67,2],['ЗХ','А. Бацула',70,25],['ПЗ','І. Нестеренко',69,15],['ПЗ','В. Юрченко',72,80],['НП','Р. Степанюк',72,10],['НП','А. Ндукве',71,18]],
+            9: [['ВР','М. Турбаєвський',73,1],['ЗХ','Ж. Тронтель',71,4],['ЗХ','Джордан',74,5],['ЗХ','А. Батагов',75,44],['ЗХ','Р. Вантух',72,15],['ПЗ','Я. Башич',72,6],['ПЗ','О. Яцик',73,8],['ПЗ','П. Мічин',71,10],['НП','Д. Антюх',75,7],['НП','П. Супряга',72,9],['НП','І. Горбач',72,11],['ВР','О. Сапутін',70,30],['ЗХ','Ешш',69,3],['ЗХ','К. Гусєв',68,2],['ПЗ','О. Хахльов',70,22],['ПЗ','Д. Мишньов',71,17],['НП','В. Бугай',70,19],['НП','Н. Ндур',71,21]],
+            10: [['ВР','О. Кемкін',73,1],['ЗХ','П. Полегенько',71,2],['ЗХ','В. Бабогло',74,4],['ЗХ','Ж. Адаменко',70,5],['ЗХ','Т. Саків',71,14],['ПЗ','В. Клименко',72,6],['ПЗ','А. Чачуа',73,8],['ПЗ','П. Альварес',74,10],['НП','Стеніо',72,7],['НП','Ігор Невес',73,9],['НП','Я. Костенко',71,11],['ВР','Я. Кінарейкін',69,31],['ЗХ','А. Рябов',68,3],['ЗХ','Д. Мірошніченко',72,24],['ПЗ','О. Кузик',70,22],['ПЗ','Ю. Тлумак',69,17],['НП','А. Підлепенець',71,21],['НП','М. Баранець',68,19]],
+            11: [['ВР','С. Чорнобай',68,1],['ЗХ','Є. Мороз',66,2],['ЗХ','В. Гришків',65,4],['ЗХ','О. Климець',67,5],['ЗХ','Г. Савчук',65,14],['ПЗ','Д. Мироненко',66,6],['ПЗ','А. Ляшенко',67,8],['ПЗ','А. Беженар',68,10],['НП','Д. Кравчук',67,7],['НП','М. Гірний',69,9],['НП','І. Бендера',66,11],['ВР','Р. Жмурко',64,31],['ЗХ','О. Жмуйда',63,3],['ЗХ','С. Равлик',64,21],['ПЗ','О. Полюлях',65,22],['ПЗ','А. Ліповуз',66,17],['НП','В. Кристін',65,19],['НП','С. Стень',67,18]],
+            12: [['ВР','А. Яшков',66,1],['ЗХ','М. Сердюк',65,2],['ЗХ','Р. Мачелюк',64,4],['ЗХ','Д. Галенков',66,5],['ЗХ','М. Потрохов',64,14],['ПЗ','А. Думанюк',65,6],['ПЗ','А. Сторчоус',67,8],['ПЗ','Є. Чепурненко',68,10],['НП','Я. Квасов',67,7],['НП','Д. Коркішко',69,9],['НП','В. Студенко',65,11],['ВР','Д. Таран',63,31],['ЗХ','О. Здоренко',62,3],['ЗХ','В. Васько',64,21],['ПЗ','Д. Тепляков',64,22],['ПЗ','М. Євтушенко',65,17],['НП','А. Волошин',66,19],['НП','Р. Сомов',65,18]],
+            13: [['ВР','О. Мозіль',71,1],['ЗХ','Д. Капінус',69,2],['ЗХ','М. Імереков',72,4],['ЗХ','В. Курило',70,5],['ЗХ','М. Безуглий',69,14],['ПЗ','А. Габелок',71,6],['ПЗ','Б. Вачіберадзе',70,8],['ПЗ','В. Юрченко',73,10],['НП','Р. Русин',72,7],['НП','А. Борячук',73,9],['НП','О. Сидоров',71,11],['ВР','І. Проценко',66,31],['ЗХ','В. Червак',68,3],['ЗХ','Є. Ткачук',69,21],['ПЗ','С. Обінайя',67,22],['ПЗ','Д. Кравченко',70,17],['НП','Д. Гармаш',72,19],['НП','М. Арі Моура',71,18]],
+            14: [['ВР','О. Рибка',71,1],['ЗХ','Д. Карась',69,2],['ЗХ','В. Приймак',71,4],['ЗХ','В. Дубко',68,5],['ЗХ','О. Осман',69,14],['ПЗ','Р. Черненко',72,6],['ПЗ','Т. Мороз',70,8],['ПЗ','В. Груша',71,10],['НП','І. Мединський',70,7],['НП','С. Суханов',72,9],['НП','Р. Тарануха',71,11],['ВР','Н. Федорівський',69,31],['ЗХ','П. Лук\'янчук',67,3],['ЗХ','А. Ломницький',66,21],['ПЗ','О. Слободян',70,22],['ПЗ','С. Косовський',69,17],['НП','Є. Прокопенко',68,19],['НП','М. Блізніченко',70,18]],
+            15: [['ВР','Б. Когут',71,1],['ЗХ','В. Гакман',69,2],['ЗХ','В. Курко',70,4],['ЗХ','С. Вовченко',71,5],['ЗХ','Д. Сміян',68,14],['ПЗ','В. Кучеров',71,6],['ПЗ','Д. Кльоц',70,8],['ПЗ','В. Дахновський',72,10],['НП','В. Шарай',71,7],['НП','М. Сікейра',72,9],['НП','М. Мрвальєвич',73,11],['ВР','Є. Паст',70,31],['ЗХ','Р. Мельник',67,3],['ЗХ','О. Кучеренко',68,21],['ПЗ','Д. Годя',68,22],['ПЗ','Я. Кухарук',69,17],['НП','Р. Гагун',67,19],['НП','Д. Світюха',68,18]]
+        };
+
         const DB = {
             teams: [
-                { id: 0, n: 'Динамо', img: 'Dynamo.png', st: 'Динамо', c: 'О. Шовковський', cImg: 'dynamo1.png', rank: 1 },
-                { id: 1, n: 'Шахтар', img: 'shakhtar.png', st: 'Арена Львів', c: 'А. Туран', cImg: 'shakhtar1.png', rank: 1 },
-                { id: 2, n: 'Кривбас', img: 'Kryvbas.png', st: 'Гірник', c: 'П. ван Леувен', cImg: 'kryvbas1.png', rank: 2 },
-                { id: 3, n: 'Полісся', img: 'polissya.png', st: 'Центральний', c: 'Р. Ротань', cImg: 'polissya1.png', rank: 2 },
-                { id: 4, n: 'Рух', img: 'rukh.png', st: 'Арена Львів', c: 'І. Федик', cImg: 'rukh1.png', rank: 3 },
-                { id: 5, n: 'ЛНЗ', img: 'lnz.png', st: 'Черкаси Арена', c: 'В. Пономарьов', cImg: 'lnz1.png', rank: 3 },
-                { id: 6, n: 'Олександрія', img: 'oleksandriya.png', st: 'Ніка', c: 'В. Шаран', cImg: 'oleksandriya1.png', rank: 3 },
-                { id: 7, n: 'Колос', img: 'Kolos.png', st: 'Колос', c: 'Р. Костишин', cImg: 'kolos1.png', rank: 4 },
-                { id: 8, n: 'Ворскла', img: 'poltava.png', st: 'Ворскла', c: 'П. Матвійченко', cImg: 'poltava1.png', rank: 4 },
-                { id: 9, n: 'Зоря', img: 'zorya.png', st: 'Лівий Берег', c: 'В. Скрипник', cImg: 'zorya1.png', rank: 4 },
-                { id: 10, n: 'Карпати', img: 'Karpaty.png', st: 'Україна', c: 'Ф. Фернандес', cImg: 'karpaty1.png', rank: 4 },
-                { id: 11, n: 'Епіцентр', img: 'epicentr.png', st: 'Тонкочеєва', c: 'С. Нагорняк', cImg: 'epicentr1.png', rank: 5 },
-                { id: 12, n: 'Кудрівка', img: 'Kudrivka.png', st: 'Кудрівка-Арена', c: 'О. Протченко', cImg: 'kudrivka1.png', rank: 5 },
-                { id: 13, n: 'Металіст 1925', img: 'metalist1925.png', st: 'Лівий Берег', c: 'М. Бартулович', cImg: 'metalist19251.png', rank: 5 },
-                { id: 14, n: 'Оболонь', img: 'obolon.png', st: 'Оболонь-Арена', c: 'О. Антоненко', cImg: 'obolon1.png', rank: 5 },
-                { id: 15, n: 'Верес', img: 'veres.png', st: 'Авангард', c: 'О. Шандрук', cImg: 'veres1.png', rank: 5 }
-            ],
-            squads: {
-                0: [['ВР','Г. Бущан',83],['ЗХ','О. Тимчик',79],['ЗХ','Д. Попов',78],['ЗХ','Т. Михавко',75],['ЗХ','В. Дубінчак',77],['ПЗ','В. Бражко',80],['ПЗ','М. Шапаренко',82],['ПЗ','В. Буяльський',81],['НП','А. Ярмоленко',80],['НП','В. Ванат',79],['НП','В. Кабаєв',77],['ВР','Р. Нещерет',74],['ЗХ','М. Дячук',73],['ЗХ','К. Вівчаренко',75],['ПЗ','Н. Волошин',76],['ПЗ','О. Піхальонок',78],['НП','В. Супряга',73],['НП','Е. Герреро',76]],
-                1: [['ВР','Д. Різник',81],['ЗХ','Ю. Конопля',80],['ЗХ','М. Матвієнко',82],['ЗХ','В. Бондар',78],['ЗХ','І. Азаров',76],['ПЗ','Т. Степаненко',80],['ПЗ','Г. Судаков',84],['ПЗ','А. Бондаренко',79],['НП','О. Зубков',80],['НП','Д. Сікан',78],['НП','Кевін',77],['ВР','К. Фесюн',72],['ЗХ','П. Енріке',75],['ЗХ','А. Франьїч',74],['ПЗ','Д. Криськів',78],['ПЗ','Марлон',76],['НП','Л. Траоре',76],['НП','Егіналду',75]]
-            },
-            names: ['Бабенко','Ковалець','Безбородько','Климчук','Сапуга','Русин','Скляр','Пердута','Батагов','Антюх','Чоботенко','Гуцуляк','Назаренко','Понєдєльнік','Задерака'],
-            fnames: ['А.','М.','В.','О.','Є.','Г.','Д.','Т.','Р.','І.','Ю.']
+                { id: 0, n: 'Динамо', img: 'Dynamo.png', st: 'Динамо', c: 'О. Шовковський', cImg: 'dynamo1.png', rank: 1, coef: 1.9 },
+                { id: 1, n: 'Шахтар', img: 'shakhtar.png', st: 'Арена Львів', c: 'А. Туран', cImg: 'shakhtar1.png', rank: 1, coef: 2.0 },
+                { id: 2, n: 'Кривбас', img: 'Kryvbas.png', st: 'Гірник', c: 'П. ван Леувен', cImg: 'kryvbas1.png', rank: 2, coef: 1.8 },
+                { id: 3, n: 'Полісся', img: 'polissya.png', st: 'Центральний', c: 'Р. Ротань', cImg: 'polissya1.png', rank: 2, coef: 1.8 },
+                { id: 4, n: 'Рух', img: 'rukh.png', st: 'Арена Львів', c: 'І. Федик', cImg: 'rukh1.png', rank: 3, coef: 1.7 },
+                { id: 5, n: 'ЛНЗ', img: 'lnz.png', st: 'Черкаси Арена', c: 'В. Пономарьов', cImg: 'lnz1.png', rank: 3, coef: 1.7 },
+                { id: 6, n: 'Олександрія', img: 'oleksandriya.png', st: 'Ніка', c: 'В. Шаран', cImg: 'oleksandriya1.png', rank: 3, coef: 1.7 },
+                { id: 7, n: 'Колос', img: 'Kolos.png', st: 'Колос', c: 'Р. Костишин', cImg: 'kolos1.png', rank: 4, coef: 1.5 },
+                { id: 8, n: 'Ворскла', img: 'poltava.png', st: 'Ворскла', c: 'П. Матвійченко', cImg: 'poltava1.png', rank: 4, coef: 1.5 },
+                { id: 9, n: 'Зоря', img: 'zorya.png', st: 'Лівий Берег', c: 'В. Скрипник', cImg: 'zorya1.png', rank: 4, coef: 1.5 },
+                { id: 10, n: 'Карпати', img: 'Karpaty.png', st: 'Україна', c: 'Ф. Фернандес', cImg: 'karpaty1.png', rank: 4, coef: 1.5 },
+                { id: 11, n: 'Епіцентр', img: 'epicentr.png', st: 'Тонкочеєва', c: 'С. Нагорняк', cImg: 'epicentr1.png', rank: 5, coef: 1.3 },
+                { id: 12, n: 'Кудрівка', img: 'Kudrivka.png', st: 'Кудрівка-Арена', c: 'О. Протченко', cImg: 'kudrivka1.png', rank: 5, coef: 1.3 },
+                { id: 13, n: 'Металіст 1925', img: 'metalist1925.png', st: 'Лівий Берег', c: 'М. Бартулович', cImg: 'metalist19251.png', rank: 5, coef: 1.2 },
+                { id: 14, n: 'Оболонь', img: 'obolon.png', st: 'Оболонь-Арена', c: 'О. Антоненко', cImg: 'obolon1.png', rank: 5, coef: 1.2 },
+                { id: 15, n: 'Верес', img: 'veres.png', st: 'Авангард', c: 'О. Шандрук', cImg: 'veres1.png', rank: 5, coef: 1.2 }
+            ]
         };
 
         let state = { 
             userTeamId: 0, coach: '', budget: 25, players: [], standings: [], round: 1, schedule: [], tactic: '4-3-3', press: 0, capId: null,
             currentDate: new Date(2026, 7, 1),
-            match: { active: false, playing: false, min: 0, tickInterv: null, physInterv: null, hScore: 0, aScore: 0, hId: 0, aId: 0, injuredId: null, otherScores: [] }
+            match: { active: false, playing: false, min: 0, hScore: 0, aScore: 0, hId: 0, aId: 0, injuredId: null, otherScores: [], addedTime: null, isHT: false }
         };
+        let mTimers = { tick: null, phys: null }; 
+
         const $ = id => document.getElementById(id);
         const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
         
-        function login() { $('login-screen').classList.remove('active-screen'); initTeams(); }
+        function saveGame() { localStorage.setItem('upl_save_pro_final', JSON.stringify(state)); }
+        function loadGame() {
+            let saved = localStorage.getItem('upl_save_pro_final');
+            if(saved) {
+                state = JSON.parse(saved); state.currentDate = new Date(state.currentDate);
+                state.match.active = false; state.match.playing = false; 
+                return true;
+            } return false;
+        }
+
+        window.onload = () => {
+            if(localStorage.getItem('upl_logged_in_pro_final') === 'true') {
+                $('login-screen').classList.remove('active-screen');
+                if(loadGame()) {
+                    $('game-ui').style.display = 'flex';
+                    updateDateUI(); renderSquad(); renderStandings(); renderMarket(); setupPointerDragAndDrop();
+                } else { initTeams(); }
+            }
+        };
+
+        function login() { 
+            let e = $('email').value, p = $('password').value; if(!e||!p) return;
+            localStorage.setItem('upl_logged_in_pro_final', 'true');
+            $('login-screen').classList.remove('active-screen'); initTeams(); 
+        }
+
         function initTeams() {
             $('teams-screen').classList.add('active-screen');
             let h = ''; DB.teams.forEach(t => h += `<div class="team-card" onclick="selTeam(${t.id})"><img src="img/${t.img}" onerror="this.src=''" class="team-logo"><div>${t.n}</div></div>`);
@@ -315,21 +359,22 @@
         function startCareer(isCustom) {
             state.coach = isCustom ? `${$('c-fname').value} ${$('c-lname').value}` : DB.teams[state.userTeamId].c;
             $('coach-screen').classList.remove('active-screen'); generateWorld(); $('game-ui').style.display = 'flex';
-            updateDateUI(); renderSquad(); renderStandings(); renderMarket();
+            updateDateUI(); renderSquad(); renderStandings(); renderMarket(); setupPointerDragAndDrop(); saveGame();
         }
 
         function generateWorld() {
             let pid = 0;
             DB.teams.forEach(t => {
                 state.standings.push({ id: t.id, w:0, d:0, l:0, p:0, m:0 });
-                let posMap = ['ВР','ЗХ','ЗХ','ЗХ','ЗХ','ПЗ','ПЗ','ПЗ','НП','НП','НП','ВР','ЗХ','ЗХ','ПЗ','ПЗ','НП','НП'];
                 for(let i=0; i<18; i++) {
-                    let pData = (DB.squads[t.id] && DB.squads[t.id][i]) ? DB.squads[t.id][i] : [posMap[i], DB.fnames[rand(0,10)]+' '+DB.names[rand(0,14)], (t.rank===1?75:68)+rand(-3,4)-(i>10?5:0)];
+                    let pData = SQUADS[t.id][i];
                     let price = Math.max(0.5, Math.round((pData[2]-60)*0.5 * 10)/10);
-                    state.players.push({ id: pid++, tId: t.id, pos: pData[0], name: pData[1], r: pData[2], stam: rand(85, 100), num: i===0?1:rand(2,99), slot: i, inj: false, price: price });
+                    state.players.push({ id: pid++, tId: t.id, pos: pData[0], name: pData[1], r: pData[2], stam: rand(85, 100), num: pData[3], slot: i, inj: false, price: price });
                 }
             });
-            state.capId = state.players.find(p => p.tId === state.userTeamId).id;
+            let myP = state.players.filter(p=>p.tId===state.userTeamId && p.slot<11).sort((a,b)=>b.r-a.r);
+            state.capId = myP[0].id;
+
             let ids = DB.teams.map(t=>t.id);
             for(let r=1; r<=30; r++) {
                 let matches = [];
@@ -337,7 +382,6 @@
                 state.schedule.push(matches); ids.splice(1, 0, ids.pop());
             }
             $('lbl-budget').innerText = state.budget.toFixed(1);
-            setupDragAndDrop();
         }
 
         function updateDateUI() {
@@ -353,60 +397,70 @@
         const formations = { '4-3-3': [{t:90,l:50},{t:75,l:20},{t:75,l:40},{t:75,l:60},{t:75,l:80},{t:55,l:30},{t:60,l:50},{t:55,l:70},{t:35,l:25},{t:30,l:50},{t:35,l:75}],
                              '4-4-2': [{t:90,l:50},{t:75,l:20},{t:75,l:40},{t:75,l:60},{t:75,l:80},{t:55,l:20},{t:55,l:40},{t:55,l:60},{t:55,l:80},{t:30,l:35},{t:30,l:65}],
                              '5-3-2': [{t:90,l:50},{t:75,l:15},{t:80,l:32},{t:80,l:50},{t:80,l:68},{t:75,l:85},{t:55,l:30},{t:55,l:50},{t:55,l:70},{t:30,l:35},{t:30,l:65}] };
-        function setTactic(t) { state.tactic = t; $('lbl-tactic').innerText = t; closeModal('tactics-modal'); renderSquad(); }
-        function setPress(p) { state.press = p; $('lbl-press').innerText = ['М\'який','Інтенсивний','Жорсткий'][p]; closeModal('press-modal'); }
+        function setTactic(t) { state.tactic = t; $('lbl-tactic').innerText = t; closeModal('tactics-modal'); renderSquad(); saveGame(); }
+        function setPress(p) { state.press = p; $('lbl-press').innerText = ['М\'який','Інтенсивний','Жорсткий'][p]; closeModal('press-modal'); saveGame(); }
 
         function renderSquad() {
             const squad = state.players.filter(p => p.tId === state.userTeamId).sort((a,b)=>a.slot-b.slot);
-            let ph = '', sh = ''; const coords = formations[state.tactic];
+            let ph = '', sh = '', totalR = 0; const coords = formations[state.tactic];
             squad.forEach(p => {
                 const isPitch = p.slot < 11; let pen = 0;
-                if(isPitch) { let zone = p.slot===0?'ВР':(p.slot<5?'ЗХ':(p.slot<8?'ПЗ':'НП')); if(p.pos!==zone && p.pos!=='ВР') pen = 5; }
+                if(isPitch) { 
+                    totalR += p.r;
+                    let zone = p.slot===0?'ВР':(p.slot<5?'ЗХ':(p.slot<8?'ПЗ':'НП')); if(p.pos!==zone && p.pos!=='ВР') pen = 5; 
+                }
                 let sColor = p.stam > 70 ? 'var(--success)' : (p.stam > 30 ? 'var(--warning)' : 'var(--danger)');
-                let cStr = `<div class="player-slot ${p.inj?'injured':''}" data-id="${p.id}" ${isPitch ? `style="top:${coords[p.slot].t}%; left:${coords[p.slot].l}%;"` : 'style="position:relative; transform:none; margin:5px;"'}>
+                let cStr = `<div class="player-slot ${p.id===state.match.injuredId?'injured':''}" data-id="${p.id}" ${isPitch ? `style="top:${coords[p.slot].t}%; left:${coords[p.slot].l}%;"` : 'style="position:relative; transform:none; margin:5px;"'}>
                     ${p.id===state.capId?'<div class="cap-badge">К</div>':''}${p.inj?'<div class="inj-badge">🚑</div>':''}
                     <div class="player-card"><span class="p-pos-tag">${p.pos}</span><div class="p-num">${p.num}</div><div class="p-name-card">${p.name}</div>
                     <div class="p-rating-tag" style="color:${pen>0?'var(--danger)':'inherit'}">${p.r-pen}</div><div class="stamina-bar"><div class="stamina-fill" style="width:${p.stam}%; background:${sColor}"></div></div></div></div>`;
                 if(isPitch) ph += cStr; else sh += cStr;
             });
             $('pitch-players').innerHTML = ph; $('subs-players').innerHTML = sh;
-            let cap = squad.find(p=>p.id===state.capId); $('lbl-cap').innerText = cap ? cap.name : 'Оберіть';
+            let cap = squad.find(p=>p.id===state.capId); $('lbl-cap').innerText = cap ? cap.name.split(' ').pop() : 'Оберіть';
+            $('lbl-ovr').innerText = 'OVR: ' + Math.round(totalR/11);
         }
 
-        /* Drag & Drop */
-        let dEl=null, gEl=null, dId=null;
-        function setupDragAndDrop() {
-            const ui = $('tab-squad'); gEl = $('drag-ghost');
-            ui.addEventListener('touchstart', e => {
-                let slot = e.target.closest('.player-slot'); if(!slot || state.match.playing) return;
-                e.preventDefault(); dEl = slot; dId = parseInt(slot.dataset.id); slot.classList.add('dragging');
-                let t = e.touches[0]; gEl.style.display = 'block'; $('ghost-card').innerHTML = slot.querySelector('.player-card').innerHTML;
-                gEl.style.left = t.clientX+'px'; gEl.style.top = t.clientY+'px';
-            }, {passive:false});
-            ui.addEventListener('touchmove', e => {
-                if(!dEl) return; e.preventDefault(); let t = e.touches[0]; gEl.style.left = t.clientX+'px'; gEl.style.top = t.clientY+'px';
+        let dragEl=null, dragId=null, ghost=$('drag-ghost');
+        function setupPointerDragAndDrop() {
+            const ui = $('tab-squad');
+            ui.addEventListener('pointerdown', e => {
+                let slot = e.target.closest('.player-slot');
+                if(!slot || (state.match.playing && !state.match.injuredId)) return;
+                e.preventDefault(); dragEl = slot; dragId = parseInt(slot.dataset.id);
+                slot.classList.add('dragging'); ghost.style.display = 'block';
+                $('ghost-card').innerHTML = slot.querySelector('.player-card').innerHTML;
+                ghost.style.left = e.clientX+'px'; ghost.style.top = e.clientY+'px';
+            });
+            ui.addEventListener('pointermove', e => {
+                if(!dragEl) return; e.preventDefault();
+                ghost.style.left = e.clientX+'px'; ghost.style.top = e.clientY+'px';
                 document.querySelectorAll('.player-slot').forEach(s=>s.classList.remove('drag-over'));
-                let target = document.elementFromPoint(t.clientX, t.clientY)?.closest('.player-slot');
-                if(target && target!==dEl) target.classList.add('drag-over');
-            }, {passive:false});
-            ui.addEventListener('touchend', e => {
-                if(!dEl) return; let t = e.changedTouches[0]; gEl.style.display = 'none'; dEl.classList.remove('dragging');
+                ghost.style.display = 'none'; let target = document.elementFromPoint(e.clientX, e.clientY)?.closest('.player-slot'); ghost.style.display = 'block';
+                if(target && target!==dragEl) target.classList.add('drag-over');
+            });
+            ui.addEventListener('pointerup', e => {
+                if(!dragEl) return;
+                ghost.style.display = 'none'; dragEl.classList.remove('dragging');
                 document.querySelectorAll('.player-slot').forEach(s=>s.classList.remove('drag-over'));
-                let target = document.elementFromPoint(t.clientX, t.clientY)?.closest('.player-slot');
-                if(target && target!==dEl) {
-                    let p1 = state.players.find(p=>p.id===dId), p2 = state.players.find(p=>p.id===parseInt(target.dataset.id));
-                    if((p1.pos==='ВР'||p2.pos==='ВР') && p1.pos!==p2.pos) alert("Воротар міняється тільки на воротаря!");
-                    else { let tmp = p1.slot; p1.slot = p2.slot; p2.slot = tmp;
-                        if((p1.id===state.match.injuredId && p1.slot>=11) || (p2.id===state.match.injuredId && p2.slot>=11)) { state.match.injuredId=null; $('injury-warning').style.display='none'; }
-                        renderSquad();
+                let target = document.elementFromPoint(e.clientX, e.clientY)?.closest('.player-slot');
+                if(target && target!==dragEl) {
+                    let p1 = state.players.find(p=>p.id===dragId), p2 = state.players.find(p=>p.id===parseInt(target.dataset.id));
+                    if((p1.pos==='ВР'||p2.pos==='ВР') && p1.pos!==p2.pos) alert("Воротаря можна міняти лише на воротаря!");
+                    else { 
+                        let tmp = p1.slot; p1.slot = p2.slot; p2.slot = tmp;
+                        if((p1.id===state.match.injuredId && p1.slot>=11) || (p2.id===state.match.injuredId && p2.slot>=11)) { 
+                            state.match.injuredId=null; $('injury-warning').style.display='none'; 
+                        }
+                        renderSquad(); saveGame();
                     }
                 }
-                dEl=null; dId=null;
+                dragEl=null; dragId=null;
             });
         }
 
         function nav(id, el) { document.querySelectorAll('.game-tab').forEach(t=>t.classList.remove('active-tab')); document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active')); $(id).classList.add('active-tab'); el.classList.add('active'); }
-        function openModal(id) { $(id).style.display = 'flex'; if(id==='cap-modal') { let h=''; state.players.filter(p=>p.tId===state.userTeamId && p.slot<11).forEach(p=>h+=`<button class="secondary" onclick="state.capId=${p.id}; closeModal('cap-modal'); renderSquad();">${p.name}</button>`); $('cap-list').innerHTML=h; } }
+        function openModal(id) { $(id).style.display = 'flex'; if(id==='cap-modal') { let h=''; state.players.filter(p=>p.tId===state.userTeamId && p.slot<11).forEach(p=>h+=`<button class="secondary" onclick="state.capId=${p.id}; closeModal('cap-modal'); renderSquad(); saveGame();">${p.name}</button>`); $('cap-list').innerHTML=h; } }
         function closeModal(id) { $(id).style.display = 'none'; }
         
         function renderStandings() {
@@ -414,14 +468,14 @@
             state.standings.forEach((s, i) => {
                 let t = DB.teams[s.id]; let c = i===0?'gold':(i>13?'var(--danger)':'transparent');
                 h += `<div class="list-row" style="border-left: 4px solid ${c};"><span class="t-pos">${i+1}</span><img src="img/${t.img}" class="t-logo" onerror="this.src=''"><span class="t-name">${t.n}</span><span class="t-stat">${s.m}</span><span class="t-stat">${s.w}</span><span class="t-stat">${s.d}</span><span class="t-stat">${s.l}</span><span class="t-stat" style="font-weight:bold;">${s.p}</span></div>`;
-            });
-            $('table-list').innerHTML = h;
+            }); $('table-list').innerHTML = h;
         }
 
         function openCalendar() { openModal('cal-modal'); let h='';
             if(state.round>30) return $('cal-list').innerHTML='Сезон завершено';
             state.schedule[state.round-1].forEach(m => {
-                h += `<div class="list-row" style="justify-content:center;"><span style="flex:1; text-align:right; font-size:12px;">${DB.teams[m.h].n}</span><img src="img/${DB.teams[m.h].img}" class="t-logo" onerror="this.src=''"> <span style="font-weight:bold;">-</span> <img src="img/${DB.teams[m.a].img}" class="t-logo" onerror="this.src=''"><span style="flex:1; font-size:12px;">${DB.teams[m.a].n}</span></div>`;
+                let isMe = (m.h===state.userTeamId || m.a===state.userTeamId);
+                h += `<div class="list-row" style="justify-content:center; ${isMe?'border: 1px solid var(--primary)':''}"><span style="flex:1; text-align:right; font-size:12px;">${DB.teams[m.h].n}</span><img src="img/${DB.teams[m.h].img}" class="t-logo" onerror="this.src=''"> <span style="font-weight:bold;">-</span> <img src="img/${DB.teams[m.a].img}" class="t-logo" onerror="this.src=''"><span style="flex:1; font-size:12px;">${DB.teams[m.a].n}</span></div>`;
             }); $('cal-list').innerHTML = h;
         }
 
@@ -434,192 +488,354 @@
         function buyP(id, pr) {
             if(state.budget < pr) return alert("Недостатньо коштів!");
             if(confirm(`Придбати за $${pr.toFixed(1)}M?`)) {
-                state.budget -= pr; let p = state.players.find(x=>x.id===id); p.tId = state.userTeamId; p.slot = 17; // bench
-                $('lbl-budget').innerText = state.budget.toFixed(1); renderSquad(); renderMarket(); alert("Трансфер успішний!");
+                state.budget -= pr; let p = state.players.find(x=>x.id===id); p.tId = state.userTeamId; p.slot = 17;
+                $('lbl-budget').innerText = state.budget.toFixed(1); renderSquad(); renderMarket(); saveGame(); alert("Трансфер успішний!");
             }
         }
 
-        /* 2D MATCH ENGINE */
-        let eng = { dots: [], ball: {x:50, y:50, vx:0, vy:0, owner:null}, state: 'kickoff', teamBall: 'h' };
+        /* ENGINE FINAL */
+        let eng = { speed: 1, dots: [], ball: {x:50, y:50, vx:0, vy:0, owner:null, lastTouch:null}, state: 'kickoff', teamBall: 'h', half: 1, pendingScorer: null };
         
+        function toggleSpeed() {
+            eng.speed *= 2; 
+            if(eng.speed > 8) eng.speed = 1; 
+            $('speed-btn').innerText = eng.speed + 'x'; 
+            if(state.match.playing) { pauseSim(); resumeSim(); }
+        }
+
         function initMatch() {
             if(state.round > 30) return;
             const m = state.schedule[state.round-1].find(m => m.h === state.userTeamId || m.a === state.userTeamId);
-            state.match = { active: true, playing: false, min: 0, hScore: 0, aScore: 0, hId: m.h, aId: m.a, injuredId: null, otherScores: [] };
+            state.match = { active: true, playing: false, min: 0, hScore: 0, aScore: 0, hId: m.h, aId: m.a, injuredId: null, otherScores: [], addedTime: null, isHT: false };
             state.schedule[state.round-1].forEach(om => { if(om.h!==state.userTeamId && om.a!==state.userTeamId) state.match.otherScores.push({h:om.h, a:om.a, hS:0, aS:0}); });
             $('m-name-h').innerText = DB.teams[m.h].n; $('m-logo-h').src = `img/${DB.teams[m.h].img}`;
             $('m-name-a').innerText = DB.teams[m.a].n; $('m-logo-a').src = `img/${DB.teams[m.a].img}`;
             $('m-score-h').innerText='0'; $('m-score-a').innerText='0'; $('m-time').innerText="0'"; $('m-events').innerHTML="";
             $('main-nav').style.display='none'; $('game-ui').style.display='none'; $('match-screen').style.display='flex';
-            initEngine(); toggleSimPlay();
+            eng.half = 1; eng.speed = 1; $('speed-btn').innerText = '1x';
+            initEngine(); 
+            resumeSim();
         }
 
+        function getGoalX(team) { return (team==='h' ? (eng.half===1?100:0) : (eng.half===1?0:100)); }
+
         function initEngine() {
-            let h='', hP=state.players.filter(p=>p.tId===state.match.hId && p.slot<11).sort((a,b)=>a.slot-b.slot);
+            let hP=state.players.filter(p=>p.tId===state.match.hId && p.slot<11).sort((a,b)=>a.slot-b.slot);
             let aP=state.players.filter(p=>p.tId===state.match.aId && p.slot<11).sort((a,b)=>a.slot-b.slot);
-            eng.dots = [];
-            // Basic Formation X positions (Home attacks Right -> X=100)
-            let fX = [5, 25, 25, 25, 25, 50, 50, 50, 75, 75, 75];
-            let fY = [50, 20, 40, 60, 80, 30, 50, 70, 25, 50, 75];
             
-            for(let i=0; i<11; i++) {
-                h += `<div class="dot dot-home" id="dh${i}">${hP[i]?hP[i].num:''}</div>`;
-                eng.dots.push({ id:`dh${i}`, t:'h', p:hP[i], bx:fX[i]/2, by:fY[i], x:fX[i]/2, y:fY[i], el:null, r:hP[i]?hP[i].r:60 });
+            if(eng.half === 1) {
+                eng.dots = [];
+                let fX = [5, 20, 20, 20, 20, 45, 45, 45, 75, 75, 75]; let fY = [50, 20, 40, 60, 80, 30, 50, 70, 25, 50, 75];
+                let html = '';
+                for(let i=0; i<11; i++) {
+                    html += `<div class="dot dot-home" id="dh${i}">${hP[i]?hP[i].num:''}</div>`; 
+                    eng.dots.push({ id:`dh${i}`, t:'h', p:hP[i], bx:fX[i], by:fY[i], x:fX[i], y:fY[i], el:null, cd: 0 });
+                }
+                for(let i=0; i<11; i++) {
+                    html += `<div class="dot dot-away" id="da${i}">${aP[i]?aP[i].num:''}</div>`;
+                    eng.dots.push({ id:`da${i}`, t:'a', p:aP[i], bx:100-fX[i], by:fY[i], x:100-fX[i], y:fY[i], el:null, cd: 0 });
+                }
+                $('sim-dots').innerHTML = html; 
+                eng.dots.forEach(d=>d.el = $(d.id));
+            } else {
+                eng.dots.forEach(d => { d.bx = 100 - d.bx; d.cd = 0; });
             }
-            for(let i=0; i<11; i++) {
-                h += `<div class="dot dot-away" id="da${i}">${aP[i]?aP[i].num:''}</div>`;
-                eng.dots.push({ id:`da${i}`, t:'a', p:aP[i], bx:100-(fX[i]/2), by:fY[i], x:100-(fX[i]/2), y:fY[i], el:null, r:aP[i]?aP[i].r:60 });
-            }
-            $('sim-dots').innerHTML = h; eng.dots.forEach(d=>d.el = $(d.id));
-            resetPitch('h');
+            resetPitch(eng.half===1 ? 'h' : 'a');
         }
 
         function resetPitch(team) {
             eng.state = 'kickoff'; eng.teamBall = team;
-            eng.ball.vx = 0; eng.ball.vy = 0; eng.ball.x = 50; eng.ball.y = 50; eng.ball.owner = null;
-            eng.dots.forEach(d => { d.x = d.bx; d.y = d.by; d.el.style.left=d.x+'%'; d.el.style.top=d.y+'%'; });
-            $('sim-ball').style.left='50%'; $('sim-ball').style.top='50%';
+            eng.ball.vx = 0; eng.ball.vy = 0; eng.ball.x = 50; eng.ball.y = 50; eng.ball.owner = null; eng.ball.lastTouch = null;
+            eng.dots.forEach(d => { 
+                if (d.t === 'h' && eng.half === 1) d.x = Math.min(d.bx, 48);
+                else if (d.t === 'a' && eng.half === 1) d.x = Math.max(d.bx, 52);
+                else if (d.t === 'h' && eng.half === 2) d.x = Math.max(d.bx, 52);
+                else if (d.t === 'a' && eng.half === 2) d.x = Math.min(d.bx, 48);
+                
+                d.y = d.by; d.cd = 0; 
+                updateElem(d.el, d.x, d.y); 
+            });
+            updateElem($('sim-ball'), eng.ball.x, eng.ball.y);
         }
 
-        function toggleSimPlay() {
-            if(state.match.injuredId) return alert("Зробіть заміну!");
-            state.match.playing = !state.match.playing; $('m-btn-play').innerText = state.match.playing ? "Пауза" : "Продовжити";
-            if(state.match.playing) {
-                state.match.tickInterv = setInterval(()=>{ state.match.min++; $('m-time').innerText=state.match.min+"'"; checkMatchEvents(); }, 600); // 1 min = 600ms
-                state.match.physInterv = setInterval(physTick, 100); // 10 ticks per min
-            } else { clearInterval(state.match.tickInterv); clearInterval(state.match.physInterv); }
+        function updateElem(el, x, y) { el.style.left=x+'%'; el.style.top=y+'%'; }
+
+        function pauseSim() {
+            state.match.playing = false;
+            clearInterval(mTimers.tick); clearInterval(mTimers.phys);
+        }
+
+        function resumeSim() {
+            state.match.playing = true;
+            mTimers.tick = setInterval(()=>{ 
+                if(eng.state !== 'var' && eng.state !== 'penalty' && eng.state !== 'check') {
+                    state.match.min++; 
+                    $('m-time').innerText=state.match.min+(state.match.addedTime&&state.match.min>90?"+":"'"); 
+                    checkMatchEvents(); 
+                }
+            }, 1200 / eng.speed); 
+            mTimers.phys = setInterval(() => {
+                for(let i=0; i<eng.speed; i++) physTick();
+            }, 16); 
         }
 
         function physTick() {
-            if(eng.state === 'goal') return;
+            if(eng.state === 'goal' || eng.state === 'var' || eng.state === 'penalty' || eng.state === 'check') return;
+            let hC = DB.teams[state.match.hId].coef, aC = DB.teams[state.match.aId].coef;
             
-            // Kickoff Logic
             if(eng.state === 'kickoff') {
-                let centerMids = eng.dots.filter(d=>d.t===eng.teamBall && d.bx>40 && d.bx<60);
-                if(centerMids.length>0) eng.ball.owner = centerMids[0];
-                eng.state = 'play';
+                let cm = eng.dots.filter(d=>d.t===eng.teamBall && d.bx>40 && d.bx<60);
+                if(cm.length>0) eng.ball.owner = cm[0]; eng.state = 'play';
             }
 
-            // Ball Physics
-            if(eng.ball.owner) {
-                eng.ball.x = eng.ball.owner.x; eng.ball.y = eng.ball.owner.y;
-            } else {
-                eng.ball.x += eng.ball.vx; eng.ball.y += eng.ball.vy;
-                eng.ball.vx *= 0.8; eng.ball.vy *= 0.8; // friction
-                if(eng.ball.x<=0 || eng.ball.x>=100 || eng.ball.y<=0 || eng.ball.y>=100) { // Out of bounds bounce
-                    eng.ball.vx *= -1; eng.ball.vy *= -1;
-                    if(eng.ball.x<=0) eng.ball.x=2; if(eng.ball.x>=100) eng.ball.x=98;
-                    if(eng.ball.y<=0) eng.ball.y=2; if(eng.ball.y>=100) eng.ball.y=98;
-                }
-            }
-            $('sim-ball').style.left=eng.ball.x+'%'; $('sim-ball').style.top=eng.ball.y+'%';
-
-            // AI Logic
+            let closestH = null, closestA = null;
+            let minDistH = 999, minDistA = 999;
             eng.dots.forEach(d => {
-                let tx = d.bx, ty = d.by;
-                if(eng.state === 'play') {
-                    if(eng.ball.owner === d) {
-                        // Attack!
-                        let goalX = d.t==='h'?100:0; tx = goalX; ty = 50;
-                        if(Math.abs(d.x - goalX) < 30) { // Shoot
-                            eng.ball.owner = null; eng.ball.vx = (goalX - d.x)*0.3; eng.ball.vy = (50 - d.y)*0.3;
-                            logEvent(`Удар від ${d.p?d.p.name:'Гравця'}!`, '');
-                        } else if(rand(1,10)>8) { // Pass
-                            let mates = eng.dots.filter(m=>m.t===d.t && m!==d && ((d.t==='h' && m.x>d.x) || (d.t==='a' && m.x<d.x)));
-                            if(mates.length>0) { let trg = mates[rand(0,mates.length-1)]; eng.ball.owner=null; eng.ball.vx=(trg.x-d.x)*0.2; eng.ball.vy=(trg.y-d.y)*0.2; }
-                        }
-                    } else if(!eng.ball.owner && Math.hypot(d.x-eng.ball.x, d.y-eng.ball.y) < 15) {
-                        tx = eng.ball.x; ty = eng.ball.y; // chase loose ball
-                        if(Math.hypot(d.x-eng.ball.x, d.y-eng.ball.y) < 3) eng.ball.owner = d;
-                    } else if(eng.ball.owner && eng.ball.owner.t !== d.t) {
-                        if(Math.hypot(d.x-eng.ball.owner.x, d.y-eng.ball.owner.y) < 20) {
-                            tx = eng.ball.owner.x; ty = eng.ball.owner.y; // Defend/Chase
-                            if(Math.hypot(d.x-eng.ball.owner.x, d.y-eng.ball.owner.y) < 3 && rand(1,10)>6) {
-                                eng.ball.owner = d; // Tackle!
-                            }
-                        } else {
-                            tx = d.bx + (d.t==='h'?-10:10); // fall back
-                        }
-                    } else if(eng.ball.owner && eng.ball.owner.t === d.t) {
-                        tx = d.bx + (d.t==='h'?15:-15); // Push forward
-                    }
-                }
-                // Move towards tx, ty
-                d.x += (tx - d.x) * 0.1; d.y += (ty - d.y) * 0.1;
-                d.el.style.left=d.x+'%'; d.el.style.top=d.y+'%';
+                if (d.p && d.p.pos === 'ВР') return; 
+                let targetX = eng.ball.owner ? eng.ball.owner.x : eng.ball.x;
+                let targetY = eng.ball.owner ? eng.ball.owner.y : eng.ball.y;
+                let dist = Math.hypot(d.x - targetX, d.y - targetY);
+                if (d.t === 'h' && dist < minDistH) { minDistH = dist; closestH = d; }
+                if (d.t === 'a' && dist < minDistA) { minDistA = dist; closestA = d; }
             });
 
-            // Goal Check (y 40-60, x < 2 or x > 98)
-            if(!eng.ball.owner && eng.ball.y > 35 && eng.ball.y < 65) {
-                if(eng.ball.x < 3) triggerGoal('a');
-                if(eng.ball.x > 97) triggerGoal('h');
+            if(eng.ball.owner) { 
+                eng.ball.lastTouch = eng.ball.owner;
+                eng.ball.x = eng.ball.owner.x + (getGoalX(eng.ball.owner.t) === 100 ? 1.5 : -1.5); eng.ball.y = eng.ball.owner.y; 
+                eng.ball.vx=0; eng.ball.vy=0;
+            } else {
+                eng.ball.x += eng.ball.vx; eng.ball.y += eng.ball.vy;
+                eng.ball.vx *= 0.99; eng.ball.vy *= 0.99; 
+                
+                if(eng.ball.y <= 1 || eng.ball.y >= 99) { 
+                    eng.ball.vy *= -1; 
+                    if(eng.ball.y <= 1) eng.ball.y=2; if(eng.ball.y >= 99) eng.ball.y=98; 
+                }
+                
+                if(eng.ball.x <= 0 || eng.ball.x >= 100) {
+                    if(eng.ball.y >= 38 && eng.ball.y <= 62) {
+                        let defendTeam = eng.ball.x <= 0 ? (eng.half===1?'h':'a') : (eng.half===1?'a':'h');
+                        let attackTeam = defendTeam === 'h' ? 'a' : 'h';
+                        let gk = eng.dots.find(d => d.t === defendTeam && d.p && d.p.pos === 'ВР');
+                        let saveChance = gk ? (gk.p.r * 0.5) : 30;
+                        
+                        if(rand(1, 100) < saveChance) {
+                            eng.ball.vx *= -0.5;
+                            eng.ball.vy = (rand(0,1)===0?-1:1) * rand(1,3);
+                            if(eng.ball.x <= 0) eng.ball.x = 2; else eng.ball.x = 98;
+                            logEvent(`🧤 Сейв воротаря (${gk ? gk.p.name.split(' ').pop() : 'ВР'})!`, '', defendTeam);
+                        } else {
+                            attemptGoal(attackTeam);
+                        }
+                    } else {
+                        eng.ball.vx *= -1; 
+                        if(eng.ball.x <= 0) eng.ball.x=1; if(eng.ball.x >= 100) eng.ball.x=99;
+                    }
+                }
             }
+            updateElem($('sim-ball'), eng.ball.x, eng.ball.y);
+
+            eng.dots.forEach(d => {
+                if(d.cd > 0) d.cd--;
+                let tx = d.bx, ty = d.by, isGK = d.p && d.p.pos === 'ВР';
+                let tCoef = d.t==='h'?hC:aC;
+                let goalX = getGoalX(d.t);
+                let isClosest = (d === closestH || d === closestA);
+
+                if(eng.state === 'play') {
+                    if(isGK) {
+                        tx = getGoalX(d.t==='h'?'a':'h') === 0 ? 2 : 98; ty = 50 + (eng.ball.y - 50) * 0.15;
+                        if(Math.hypot(d.x-eng.ball.x, d.y-eng.ball.y) < 15 && (tx===2?eng.ball.x<15:eng.ball.x>85)) { tx = eng.ball.x; ty = eng.ball.y; }
+                    } else if(eng.ball.owner === d) {
+                        tx = goalX; ty = 50;
+                        if(Math.abs(d.x - goalX) < 35 && d.cd === 0 && rand(1, 100) <= 40) { 
+                            eng.ball.owner = null; let cornerY = rand(0,1)===0 ? 42 : 58;
+                            eng.ball.vx = (goalX - d.x) * 0.04; eng.ball.vy = (cornerY - d.y) * 0.04;
+                            d.cd = 40; 
+                            logEvent(`Удар по воротах!`, '', d.t);
+                        } else if(rand(1,200) < (tCoef*15) && d.cd === 0) { 
+                            let mates = eng.dots.filter(m=>m.t===d.t && m!==d && !m.p.pos.includes('ВР') && ((goalX===100 && m.x>d.x-5) || (goalX===0 && m.x<d.x+5)));
+                            if(mates.length>0) { 
+                                let trg = mates[rand(0,mates.length-1)]; 
+                                let dist = Math.hypot(trg.x-d.x, trg.y-d.y);
+                                let passSpeed = 0.014 + (dist * 0.0001); 
+                                eng.ball.owner=null; eng.ball.vx=(trg.x-d.x)*passSpeed; eng.ball.vy=(trg.y-d.y)*passSpeed; 
+                                d.cd = 20; 
+                            }
+                        }
+                    } else if(!eng.ball.owner) {
+                        if (isClosest || Math.hypot(d.x-eng.ball.x, d.y-eng.ball.y) < 5) {
+                            tx = eng.ball.x; ty = eng.ball.y;
+                            if(Math.hypot(d.x-eng.ball.x, d.y-eng.ball.y) < 2.5 && d.cd === 0) eng.ball.owner = d;
+                        } else {
+                            tx = d.bx; ty = d.by;
+                        }
+                    } else if(eng.ball.owner && eng.ball.owner.t !== d.t) {
+                        let distToOwner = Math.hypot(d.x-eng.ball.owner.x, d.y-eng.ball.owner.y);
+                        if ((isClosest && distToOwner < 30) || distToOwner < 5) {
+                            tx = eng.ball.owner.x; ty = eng.ball.owner.y;
+                            if(distToOwner < 2.5 && rand(1,100)<(tCoef*10) && d.cd === 0) { 
+                                eng.ball.owner.cd = 40; 
+                                eng.ball.owner = d; 
+                                d.cd = 10; 
+                            }
+                        } else {
+                            tx = d.bx + (goalX===100?-15:15); ty = d.by;
+                        }
+                    } else if(eng.ball.owner && eng.ball.owner.t === d.t) {
+                        tx = d.bx + (goalX===100?20:-20); ty = d.by;
+                    }
+                }
+                
+                d.x += (tx - d.x) * 0.0035; d.y += (ty - d.y) * 0.0035; 
+                updateElem(d.el, d.x, d.y);
+            });
+        }
+
+        function attemptGoal(team) {
+            eng.state = 'check';
+            eng.pendingScorer = eng.ball.lastTouch ? eng.ball.lastTouch.p : null;
+            if(rand(1, 100) <= 30) triggerVAR(team);
+            else triggerGoal(team);
+        }
+
+        function triggerVAR(team) {
+            pauseSim();
+            $('goal-alert').innerText = "ВАР..."; $('goal-alert').style.color = "white"; $('goal-alert').style.display='block';
+            logEvent(`🔍 ВАР: Перевірка голу...`, 'var', 'n');
+            setTimeout(() => {
+                if(rand(1, 100) <= 70) {
+                    $('goal-alert').style.display='none'; triggerGoal(team);
+                } else {
+                    $('goal-alert').innerText = "ОФСАЙД"; $('goal-alert').style.color = "red";
+                    let scorerStr = eng.pendingScorer ? `${eng.pendingScorer.name.split(' ').pop()} ${eng.pendingScorer.num}` : "Гравець";
+                    logEvent(`❌ ВАР: Гол скасовано. Офсайд (${scorerStr}).`, 'r', team);
+                    setTimeout(() => { $('goal-alert').style.display='none'; resetPitch(team==='h'?'a':'h'); resumeSim(); }, 2500 / eng.speed);
+                }
+            }, 2500 / eng.speed);
         }
 
         function triggerGoal(team) {
-            eng.state = 'goal'; clearInterval(state.match.tickInterv); clearInterval(state.match.physInterv);
             if(team === 'h') { state.match.hScore++; $('m-score-h').innerText=state.match.hScore; } else { state.match.aScore++; $('m-score-a').innerText=state.match.aScore; }
-            let scorer = DB.teams[team==='h'?state.match.hId:state.match.aId].n;
-            logEvent(`⚽ ГОООЛ! ${scorer}`, 'goal');
-            if(navigator.vibrate) navigator.vibrate([300, 100, 300]);
             
-            $('goal-alert').style.display='block';
-            setTimeout(() => {
-                $('goal-alert').style.display='none';
-                resetPitch(team==='h'?'a':'h');
-                if(state.match.playing) {
-                    state.match.tickInterv = setInterval(()=>{ state.match.min++; $('m-time').innerText=state.match.min+"'"; checkMatchEvents(); }, 600);
-                    state.match.physInterv = setInterval(physTick, 100);
-                }
-            }, 3000);
+            let scorerStr = "Автогол";
+            if(eng.pendingScorer) scorerStr = `${eng.pendingScorer.name.split(' ').pop()} ${eng.pendingScorer.num}`;
+            logEvent(`⚽ Гол! ${scorerStr}`, 'goal', team);
+            
+            $('goal-alert').innerText = "ГОООЛ!"; $('goal-alert').style.color = "gold"; $('goal-alert').style.display='block';
+            if(navigator.vibrate) navigator.vibrate([300, 100, 300]);
+            pauseSim();
+            setTimeout(() => { $('goal-alert').style.display='none'; resetPitch(team==='h'?'a':'h'); resumeSim(); }, 3000 / eng.speed);
         }
 
-        function logEvent(msg, type) {
-            let cl = type==='goal'?'ev-goal':(type==='y'?'ev-y':(type==='r'?'ev-r':(type==='inj'?'ev-inj':'')));
-            $('m-events').innerHTML = `<div class="event-line"><span class="ev-min">${state.match.min}'</span> <span class="${cl}">${msg}</span></div>` + $('m-events').innerHTML;
+        function triggerPenalty(team) {
+            eng.state = 'penalty'; pauseSim();
+            let foulTeam = team === 'h' ? 'a' : 'h';
+            logEvent(`🛑 ПЕНАЛЬТІ у ворота ${foulTeam==='h'?'Господарів':'Гостей'}!`, 'r', foulTeam);
+            let defendGoalX = getGoalX(foulTeam);
+            eng.dots.forEach(d=>{ d.x = d.t===team ? 50 : (defendGoalX===0?30:70); d.y=50; updateElem(d.el, d.x, d.y); });
+            eng.ball.x = defendGoalX===0?15:85; eng.ball.y = 50; eng.ball.owner = null;
+            let gk = eng.dots.find(d=>d.t!==team && d.p.pos==='ВР'); if(gk) { gk.x=defendGoalX===0?2:98; gk.y=50; updateElem(gk.el, gk.x, gk.y); }
+            let kicker = eng.dots.find(d=>d.t===team && d.p.pos==='НП'); if(kicker) { kicker.x=defendGoalX===0?20:80; kicker.y=50; eng.ball.owner=kicker; eng.ball.lastTouch=kicker; updateElem(kicker.el, kicker.x, kicker.y); }
+            updateElem($('sim-ball'), eng.ball.x, eng.ball.y);
+            
+            setTimeout(() => {
+                eng.ball.owner=null; eng.ball.vx = (defendGoalX===0?-15:15)*0.08; eng.ball.vy = rand(-1,1)*0.02;
+                resumeSim(); eng.state='play';
+            }, 2000 / eng.speed);
+        }
+
+        function logEvent(msg, type, team) {
+            let cl = type==='goal'?'ev-goal':(type==='y'?'ev-y':(type==='r'?'ev-r':(type==='inj'?'ev-inj':(type==='var'?'ev-var':''))));
+            
+            let alignCl = 'ev-n';
+            if(team === 'h') alignCl = state.match.hId === state.userTeamId ? 'ev-h' : 'ev-a';
+            if(team === 'a') alignCl = state.match.aId === state.userTeamId ? 'ev-h' : 'ev-a';
+            if(team === 'n') alignCl = 'ev-n';
+            
+            let html = `<div class="event-line ${alignCl}">`;
+            if(alignCl === 'ev-a') html += `<span class="ev-text ${cl}">${msg}</span><span class="ev-min">${state.match.min}'</span>`;
+            else html += `<span class="ev-min">${state.match.min}'</span><span class="ev-text ${cl}">${msg}</span>`;
+            html += `</div>`;
+            
+            let currentLogs = $('m-events').innerHTML;
+            if (currentLogs.split('</div>').length > 15) {
+                currentLogs = currentLogs.split('</div>').slice(0, 15).join('</div>') + '</div>';
+            }
+            
+            $('m-events').innerHTML = html + currentLogs;
         }
 
         function checkMatchEvents() {
-            state.match.otherScores.forEach(om => { if(rand(1,100)>95) { if(rand(0,1)===0) om.hS++; else om.aS++; } });
-            let r = rand(1, 100);
-            if (r===1 && !state.match.injuredId) { // Injury
+            state.match.otherScores.forEach(om => {
+                if(rand(1,100) > 96) { 
+                    if(rand(0,1)===0) om.hS++; else om.aS++;
+                }
+            });
+            
+            let rFoul = rand(1, 150);
+            if(rFoul <= 3) {
+                let team = rand(0,1)===0?'h':'a';
+                let pList = state.players.filter(p=>p.tId===(team==='h'?state.match.hId:state.match.aId) && p.slot<11);
+                let rndP = pList[rand(0, pList.length-1)];
+                if(rFoul === 1) logEvent(`🟨 Жовта картка (${rndP.name.split(' ').pop()})`, "y", team);
+                if(rFoul === 2) logEvent(`🟥 ЧЕРВОНА картка! (${rndP.name.split(' ').pop()})`, "r", team);
+                if(rFoul === 3) triggerPenalty(team==='h'?'a':'h');
+            }
+            
+            let injChance = state.press === 0 ? 4000 : (state.press === 1 ? 2500 : 1200); 
+            if (rand(1, injChance) === 1 && !state.match.injuredId) { 
                 let pList = state.players.filter(p=>p.tId===state.userTeamId && p.slot<11);
                 if(pList.length>0) {
                     let injP = pList[rand(0, pList.length-1)]; injP.inj = true; state.match.injuredId = injP.id;
-                    logEvent(`🚑 Травма! ${injP.name} не може продовжити гру!`, "inj");
-                    toggleSimPlay(); $('injury-warning').style.display='block'; pauseForTactics(); renderSquad();
+                    logEvent(`🚑 ТРАВМА! ${injP.name.split(' ').pop()} не може продовжити!`, "inj", state.userTeamId===state.match.hId?'h':'a');
+                    pauseForTactics(); 
+                    $('injury-warning').style.display='block';
                 }
-            } else if(r===2) logEvent("🟨 Жовта картка", "y");
+            }
             
-            if(state.match.min === 45) showHTModal('Перерва');
-            if(state.match.min >= 90) showHTModal('Матч завершено');
+            if(state.match.min === 45 && !state.match.isHT) {
+                state.match.isHT = true; pauseSim(); showHTModal('Перерва');
+            }
+            if(state.match.min === 90 && state.match.addedTime === null) {
+                state.match.addedTime = rand(1,6); logEvent(`Суддя додав ${state.match.addedTime} хв.`, "var", "n");
+            }
+            if(state.match.addedTime !== null && state.match.min >= 90 + state.match.addedTime) {
+                pauseSim(); showHTModal('Матч завершено');
+            }
         }
 
         function pauseForTactics() {
-            if(state.match.playing) toggleSimPlay();
-            $('match-screen').style.display = 'none'; $('game-ui').style.display = 'flex';
+            pauseSim(); $('match-screen').style.display = 'none'; $('game-ui').style.display = 'flex';
             $('btn-start-match').style.display = 'none'; $('btn-resume-match').style.display = 'block'; closeModal('ht-modal');
+            renderSquad();
         }
-        function resumeMatch() {
-            if(state.match.injuredId) return alert("Зробіть заміну травмованого гравця!");
-            $('game-ui').style.display='none'; $('match-screen').style.display='flex';
-            initEngine(); // Refresh positions if subbed
-            toggleSimPlay();
+        function resumeMatchFromSubs() {
+            if(state.match.injuredId) return alert("Зробіть заміну травмованого гравця! Перетягніть його на лавку.");
+            $('game-ui').style.display='none'; $('match-screen').style.display='flex'; resumeSim();
         }
-        function resumeMatchFromHT() { closeModal('ht-modal'); initEngine(); toggleSimPlay(); }
+        function resumeMatchFromHT() { 
+            closeModal('ht-modal'); 
+            eng.half = 2;
+            initEngine(); 
+            resumeSim(); 
+        }
 
         function showHTModal(title) {
-            if(state.match.playing) toggleSimPlay(); $('ht-title').innerText = title;
+            $('ht-title').innerText = title;
             let h=''; state.match.otherScores.forEach(om => { h += `<div style="display:flex; justify-content:space-between; font-size:12px; border-bottom:1px solid #eee; padding:5px 0;"><span style="flex:1; text-align:right;">${DB.teams[om.h].n}</span><span style="font-weight:bold; margin:0 10px;">${om.hS} - ${om.aS}</span><span style="flex:1;">${DB.teams[om.a].n}</span></div>`; });
             $('ht-scores').innerHTML = h;
-            if(title === 'Матч завершено') { $('btn-ht-resume').innerText = "Продовжити кар'єру"; $('btn-ht-resume').onclick = finishMatch; } 
-            else { $('btn-ht-resume').innerText = "Другий тайм"; $('btn-ht-resume').onclick = resumeMatchFromHT; }
+            if(title === 'Матч завершено') { 
+                $('btn-ht-sub').style.display = 'none'; $('btn-ht-resume').innerText = "Завершити матч"; $('btn-ht-resume').onclick = finishMatch; 
+            } else { 
+                $('btn-ht-sub').style.display = 'block'; $('btn-ht-resume').innerText = "Другий тайм"; $('btn-ht-resume').onclick = resumeMatchFromHT; 
+            }
             $('ht-modal').style.display = 'flex';
         }
 
         function finishMatch() {
             closeModal('ht-modal'); $('match-screen').style.display='none'; $('game-ui').style.display='flex'; $('main-nav').style.display='flex';
-            $('btn-start-match').style.display='block'; $('btn-resume-match').style.display='none';
+            $('btn-start-match').style.display='block'; $('btn-resume-match').style.display='none'; 
             
             let drain = 10 + (state.press*8);
             state.players.filter(p=>p.tId===state.userTeamId).forEach(p => { if(p.slot<11) p.stam-=drain; else p.stam+=10; if(p.stam<5) p.stam=5; if(p.stam>100) p.stam=100; p.inj=false; });
@@ -634,7 +850,7 @@
             
             let restDays = rand(4,8); state.currentDate.setDate(state.currentDate.getDate() + restDays);
             state.players.forEach(p => { p.stam += (restDays*12); if(p.stam>100) p.stam=100; });
-            state.round++; updateDateUI(); renderSquad(); renderStandings(); nav('tab-table', document.querySelectorAll('.nav-item')[1]);
+            state.round++; updateDateUI(); renderSquad(); renderStandings(); nav('tab-table', document.querySelectorAll('.nav-item')[1]); saveGame();
         }
     </script>
 </body>
