@@ -692,11 +692,11 @@
                         let defendTeam = eng.ball.x <= 0 ? (eng.half===1?'a':'h') : (eng.half===1?'h':'a');
                         let attackTeam = defendTeam === 'h' ? 'a' : 'h';
                         let gk = eng.dots.find(d => d.t === defendTeam && d.p && d.p.pos === 'ВР');
-                        let saveChance = gk ? (gk.p.r * 0.5) : 30;
+                        let saveChance = gk ? (gk.p.r * 0.95) : 60;
                         
                         if(rand(1, 100) < saveChance) {
-                            eng.ball.vx *= -0.5;
-                            eng.ball.vy = (rand(0,1)===0?-1:1) * rand(1,3);
+                            eng.ball.vx *= -0.8;
+                            eng.ball.vy = (rand(0,1)===0?-1:1) * rand(1,4);
                             if(eng.ball.x <= 0) eng.ball.x = 2; else eng.ball.x = 98;
                             logEvent(`🧤 Сейв воротаря (${gk ? gk.p.name.split(' ').pop() : 'ВР'})!`, '', defendTeam);
                         } else {
@@ -843,10 +843,8 @@
 
         function checkMatchEvents() {
             state.match.otherScores.forEach(om => {
-                let omHC = DB.teams.find(x=>x.id===om.h).coef;
-                let omAC = DB.teams.find(x=>x.id===om.a).coef;
-                if(rand(1, 150) === 1) { 
-                    if(rand(1, 100) < (omHC / (omHC + omAC)) * 100) om.hS++; else om.aS++;
+                if(rand(1,100) > 96) { 
+                    if(rand(0,1)===0) om.hS++; else om.aS++;
                 }
             });
             
