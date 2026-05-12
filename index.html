@@ -13,16 +13,21 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; user-select: none; -webkit-user-select: none; }
         body { background-color: var(--bg-color); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; flex-direction: column; touch-action: manipulation; }
+        
         .screen { display: none; height: 100%; overflow-y: auto; padding: 20px; padding-bottom: calc(var(--bottom-nav-h) + 20px); }
         .active-screen { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
         h1, h2, h3 { text-align: center; margin-bottom: 15px; color: var(--primary); }
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-size: 14px; font-weight: bold; }
         input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 16px; background: var(--container-bg); }
+        
         button { width: 100%; padding: 14px; border: none; border-radius: 8px; background-color: var(--primary); color: white; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 5px; }
         button:active { transform: scale(0.98); background-color: var(--primary-dark); }
+        button.danger { background-color: var(--danger); }
         button.secondary { background-color: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        
         .teams-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         .team-card, .coach-card { background: var(--container-bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .team-logo { width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px; }
@@ -37,9 +42,9 @@
         .game-tab { display: none; flex: 1; overflow-y: auto; padding: 15px; padding-bottom: calc(var(--bottom-nav-h) + 20px); }
         .active-tab { display: block; animation: fadeIn 0.2s; }
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--bottom-nav-h); background: var(--container-bg); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 100; max-width: 600px; margin: 0 auto; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; color: var(--text-muted); cursor: pointer; height: 100%; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: var(--text-muted); cursor: pointer; height: 100%; }
         .nav-item.active { color: var(--primary); font-weight: bold; }
-        .nav-icon { font-size: 22px; margin-bottom: 2px; }
+        .nav-icon { font-size: 20px; margin-bottom: 2px; }
         
         .squad-top-controls { display: flex; gap: 5px; margin-bottom: 10px; }
         .squad-btn { flex: 1; padding: 6px 2px; font-size: 11px; text-align: center; border-radius: 6px; background: white; border: 1px solid var(--border); font-weight: bold; color: var(--text-main); }
@@ -67,8 +72,16 @@
         .inj-badge { position: absolute; top: -6px; right: -6px; background: var(--danger); color: white; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; font-weight: bold; display: flex; align-items: center; justify-content: center; z-index: 6; }
         .subs-container { background: var(--container-bg); border-radius: 10px; padding: 10px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; min-height: 80px; touch-action: none; position: relative; z-index: 10; }
         #drag-ghost { position: fixed; pointer-events: none; z-index: 9999; opacity: 0.8; transform: translate(-50%, -50%); display: none; width: 55px; }
+
+        .profile-container { text-align: center; padding: 10px; }
+        .profile-header { background: white; border-radius: 20px; padding: 25px 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border); }
+        .profile-name { font-size: 22px; font-weight: bold; margin-top: 15px; color: var(--text-main); }
+        .profile-team-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--bg-color); padding: 5px 15px; border-radius: 20px; margin-top: 10px; font-weight: 600; font-size: 14px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .stat-box { background: white; padding: 15px; border-radius: 15px; border: 1px solid var(--border); }
+        .stat-val { font-size: 18px; font-weight: bold; color: var(--primary); }
+        .stat-lbl { font-size: 12px; color: var(--text-muted); }
         
-        /* MATCH 2D SIMULATION UI */
         #match-screen { display: none; flex-direction: column; height: 100vh; background: var(--bg-color); z-index: 150; position: fixed; top: 0; left: 0; width: 100%; max-width: 600px; left: 50%; transform: translateX(-50%); }
         .match-scoreboard { background: var(--container-bg); padding: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 10; }
         .sb-team { display: flex; flex-direction: column; align-items: center; flex: 1; }
@@ -199,11 +212,40 @@
             <div id="market-list"></div>
         </div>
 
+        <div id="tab-profile" class="game-tab">
+            <div class="profile-container">
+                <div class="profile-header">
+                    <img id="prof-photo" class="coach-photo" src="">
+                    <div class="profile-name" id="prof-name">Тренер Ім'я</div>
+                    <div class="profile-team-badge">
+                        <img id="prof-team-logo" src="" width="20">
+                        <span id="prof-team-name">ФК Команда</span>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-val" id="prof-budget">$0M</div>
+                            <div class="stat-lbl">Бюджет</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-val" id="prof-round">1</div>
+                            <div class="stat-lbl">Тур</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-box" style="margin-bottom: 20px; text-align: left;">
+                    <h4 style="margin-bottom: 10px;">Досягнення</h4>
+                    <p style="font-size: 13px; color: var(--text-muted);">Тут з'являтимуться ваші трофеї та нагороди за сезони.</p>
+                </div>
+                <button class="danger" onclick="confirmEndCareer()">Завершити кар'єру</button>
+            </div>
+        </div>
+
         <div class="bottom-nav" id="main-nav">
             <div class="nav-item active" onclick="nav('tab-squad', this)"><div class="nav-icon">👕</div>Склад</div>
             <div class="nav-item" onclick="nav('tab-table', this)"><div class="nav-icon">🏆</div>Таблиця</div>
             <div class="nav-item" onclick="nav('tab-market', this)"><div class="nav-icon">🛒</div>Ринок</div>
             <div class="nav-item" onclick="openCalendar()"><div class="nav-icon">📅</div>Матчі</div>
+            <div class="nav-item" onclick="nav('tab-profile', this)"><div class="nav-icon">👤</div>Профіль</div>
         </div>
     </div>
 
@@ -291,19 +333,19 @@
 
         const DB = {
             teams: [
-                { id: 0, n: 'Динамо', img: 'Dynamo.png', st: 'Динамо', c: 'О. Шовковський', cImg: 'dynamo1.png', rank: 1, coef: 1.9 },
+                { id: 0, n: 'Динамо', img: 'dynamo.png', st: 'Динамо', c: 'О. Шовковський', cImg: 'dynamo1.png', rank: 1, coef: 1.9 },
                 { id: 1, n: 'Шахтар', img: 'shakhtar.png', st: 'Арена Львів', c: 'А. Туран', cImg: 'shakhtar1.png', rank: 1, coef: 2.0 },
-                { id: 2, n: 'Кривбас', img: 'Kryvbas.png', st: 'Гірник', c: 'П. ван Леувен', cImg: 'kryvbas1.png', rank: 2, coef: 1.8 },
+                { id: 2, n: 'Кривбас', img: 'kryvbas.png', st: 'Гірник', c: 'П. ван Леувен', cImg: 'kryvbas1.png', rank: 2, coef: 1.8 },
                 { id: 3, n: 'Полісся', img: 'polissya.png', st: 'Центральний', c: 'Р. Ротань', cImg: 'polissya1.png', rank: 2, coef: 1.8 },
                 { id: 4, n: 'Рух', img: 'rukh.png', st: 'Арена Львів', c: 'І. Федик', cImg: 'rukh1.png', rank: 3, coef: 1.7 },
                 { id: 5, n: 'ЛНЗ', img: 'lnz.png', st: 'Черкаси Арена', c: 'В. Пономарьов', cImg: 'lnz1.png', rank: 3, coef: 1.7 },
                 { id: 6, n: 'Олександрія', img: 'oleksandriya.png', st: 'Ніка', c: 'В. Шаран', cImg: 'oleksandriya1.png', rank: 3, coef: 1.7 },
-                { id: 7, n: 'Колос', img: 'Kolos.png', st: 'Колос', c: 'Р. Костишин', cImg: 'kolos1.png', rank: 4, coef: 1.5 },
+                { id: 7, n: 'Колос', img: 'kolos.png', st: 'Колос', c: 'Р. Костишин', cImg: 'kolos1.png', rank: 4, coef: 1.5 },
                 { id: 8, n: 'Ворскла', img: 'poltava.png', st: 'Ворскла', c: 'П. Матвійченко', cImg: 'poltava1.png', rank: 4, coef: 1.5 },
                 { id: 9, n: 'Зоря', img: 'zorya.png', st: 'Лівий Берег', c: 'В. Скрипник', cImg: 'zorya1.png', rank: 4, coef: 1.5 },
-                { id: 10, n: 'Карпати', img: 'Karpaty.png', st: 'Україна', c: 'Ф. Фернандес', cImg: 'karpaty1.png', rank: 4, coef: 1.5 },
+                { id: 10, n: 'Карпати', img: 'karpaty.png', st: 'Україна', c: 'Ф. Фернандес', cImg: 'karpaty1.png', rank: 4, coef: 1.5 },
                 { id: 11, n: 'Епіцентр', img: 'epicentr.png', st: 'Тонкочеєва', c: 'С. Нагорняк', cImg: 'epicentr1.png', rank: 5, coef: 1.3 },
-                { id: 12, n: 'Кудрівка', img: 'Kudrivka.png', st: 'Кудрівка-Арена', c: 'О. Протченко', cImg: 'kudrivka1.png', rank: 5, coef: 1.3 },
+                { id: 12, n: 'Кудрівка', img: 'kudrivka.png', st: 'Кудрівка-Арена', c: 'О. Протченко', cImg: 'kudrivka1.png', rank: 5, coef: 1.3 },
                 { id: 13, n: 'Металіст 1925', img: 'metalist1925.png', st: 'Лівий Берег', c: 'М. Бартулович', cImg: 'metalist19251.png', rank: 5, coef: 1.2 },
                 { id: 14, n: 'Оболонь', img: 'obolon.png', st: 'Оболонь-Арена', c: 'О. Антоненко', cImg: 'obolon1.png', rank: 5, coef: 1.2 },
                 { id: 15, n: 'Верес', img: 'veres.png', st: 'Авангард', c: 'О. Шандрук', cImg: 'veres1.png', rank: 5, coef: 1.2 }
@@ -335,7 +377,7 @@
                 $('login-screen').classList.remove('active-screen');
                 if(loadGame()) {
                     $('game-ui').style.display = 'flex';
-                    updateDateUI(); renderSquad(); renderStandings(); renderMarket(); setupPointerDragAndDrop();
+                    updateDateUI(); renderSquad(); renderStandings(); renderMarket(); setupPointerDragAndDrop(); renderProfile();
                 } else { initTeams(); }
             }
         };
@@ -358,8 +400,9 @@
         }
         function startCareer(isCustom) {
             state.coach = isCustom ? `${$('c-fname').value} ${$('c-lname').value}` : DB.teams[state.userTeamId].c;
+            if(!state.coach || state.coach.trim() === '') state.coach = 'Невідомий Тренер';
             $('coach-screen').classList.remove('active-screen'); generateWorld(); $('game-ui').style.display = 'flex';
-            updateDateUI(); renderSquad(); renderStandings(); renderMarket(); setupPointerDragAndDrop(); saveGame();
+            updateDateUI(); renderSquad(); renderStandings(); renderMarket(); setupPointerDragAndDrop(); renderProfile(); saveGame();
         }
 
         function generateWorld() {
@@ -382,6 +425,23 @@
                 state.schedule.push(matches); ids.splice(1, 0, ids.pop());
             }
             $('lbl-budget').innerText = state.budget.toFixed(1);
+        }
+
+        function renderProfile() {
+            let team = DB.teams[state.userTeamId];
+            $('prof-name').innerText = state.coach;
+            $('prof-team-name').innerText = team.n;
+            $('prof-team-logo').src = `img/${team.img}`;
+            $('prof-photo').src = `img/${team.cImg}`;
+            $('prof-budget').innerText = `$${state.budget.toFixed(1)}M`;
+            $('prof-round').innerText = state.round;
+        }
+
+        function confirmEndCareer() {
+            if(confirm("Ви впевнені, що хочете завершити кар'єру? Увесь прогрес буде видалено!")) {
+                localStorage.removeItem('upl_save_pro_final');
+                location.reload();
+            }
         }
 
         function updateDateUI() {
@@ -459,14 +519,19 @@
             });
         }
 
-        function nav(id, el) { document.querySelectorAll('.game-tab').forEach(t=>t.classList.remove('active-tab')); document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active')); $(id).classList.add('active-tab'); el.classList.add('active'); }
+        function nav(id, el) { 
+            document.querySelectorAll('.game-tab').forEach(t=>t.classList.remove('active-tab')); 
+            document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active')); 
+            $(id).classList.add('active-tab'); el.classList.add('active'); 
+            if(id === 'tab-profile') renderProfile();
+        }
         function openModal(id) { $(id).style.display = 'flex'; if(id==='cap-modal') { let h=''; state.players.filter(p=>p.tId===state.userTeamId && p.slot<11).forEach(p=>h+=`<button class="secondary" onclick="state.capId=${p.id}; closeModal('cap-modal'); renderSquad(); saveGame();">${p.name}</button>`); $('cap-list').innerHTML=h; } }
         function closeModal(id) { $(id).style.display = 'none'; }
         
         function renderStandings() {
             state.standings.sort((a,b)=>b.p-a.p); let h='';
             state.standings.forEach((s, i) => {
-                let t = DB.teams[s.id]; let c = i===0?'gold':(i>13?'var(--danger)':'transparent');
+                let t = DB.teams.find(x=>x.id===s.id); let c = i===0?'gold':(i>13?'var(--danger)':'transparent');
                 h += `<div class="list-row" style="border-left: 4px solid ${c};"><span class="t-pos">${i+1}</span><img src="img/${t.img}" class="t-logo" onerror="this.src=''"><span class="t-name">${t.n}</span><span class="t-stat">${s.m}</span><span class="t-stat">${s.w}</span><span class="t-stat">${s.d}</span><span class="t-stat">${s.l}</span><span class="t-stat" style="font-weight:bold;">${s.p}</span></div>`;
             }); $('table-list').innerHTML = h;
         }
@@ -475,13 +540,23 @@
             if(state.round>30) return $('cal-list').innerHTML='Сезон завершено';
             state.schedule[state.round-1].forEach(m => {
                 let isMe = (m.h===state.userTeamId || m.a===state.userTeamId);
-                h += `<div class="list-row" style="justify-content:center; ${isMe?'border: 1px solid var(--primary)':''}"><span style="flex:1; text-align:right; font-size:12px;">${DB.teams[m.h].n}</span><img src="img/${DB.teams[m.h].img}" class="t-logo" onerror="this.src=''"> <span style="font-weight:bold;">-</span> <img src="img/${DB.teams[m.a].img}" class="t-logo" onerror="this.src=''"><span style="flex:1; font-size:12px;">${DB.teams[m.a].n}</span></div>`;
+                h += `<div class="list-row" style="justify-content:center; ${isMe?'border: 1px solid var(--primary)':''}"><span style="flex:1; text-align:right; font-size:12px;">${DB.teams.find(x=>x.id===m.h).n}</span><img src="img/${DB.teams.find(x=>x.id===m.h).img}" class="t-logo" onerror="this.src=''"> <span style="font-weight:bold;">-</span> <img src="img/${DB.teams.find(x=>x.id===m.a).img}" class="t-logo" onerror="this.src=''"><span style="flex:1; font-size:12px;">${DB.teams.find(x=>x.id===m.a).n}</span></div>`;
             }); $('cal-list').innerHTML = h;
         }
 
         function renderMarket() {
             let h=''; state.players.filter(p=>p.tId!==state.userTeamId).sort((a,b)=>b.price-a.price).slice(0,30).forEach(p => {
-                h += `<div class="market-card"><img src="img/${DB.teams[p.tId].img}" width="30" height="30" onerror="this.src=''"><div class="m-info" style="flex:1; margin-left:10px;"><span style="font-weight:bold;">${p.name} <span style="font-size:10px; color:var(--text-muted)">${p.pos} | ${p.r}</span></span><span style="font-size:12px; color:var(--text-muted)">${DB.teams[p.tId].n}</span></div><div style="display:flex; flex-direction:column; align-items:flex-end;"><span class="m-price">$${p.price.toFixed(1)}M</span><button style="padding:4px 10px; font-size:12px; margin-top:5px; width:auto;" onclick="buyP(${p.id}, ${p.price})">Купити</button></div></div>`;
+                h += `<div class="market-card" style="display:flex; align-items:center; background:var(--container-bg); padding:10px; margin-bottom:5px; border-radius:8px; border:1px solid var(--border);">
+                        <img src="img/${DB.teams.find(x=>x.id===p.tId).img}" width="30" height="30" onerror="this.src=''">
+                        <div class="m-info" style="flex:1; margin-left:10px;">
+                            <span style="font-weight:bold;">${p.name} <span style="font-size:10px; color:var(--text-muted)">${p.pos} | ${p.r}</span></span><br>
+                            <span style="font-size:12px; color:var(--text-muted)">${DB.teams.find(x=>x.id===p.tId).n}</span>
+                        </div>
+                        <div style="display:flex; flex-direction:column; align-items:flex-end;">
+                            <span class="m-price" style="font-weight:bold; color:var(--primary);">$${p.price.toFixed(1)}M</span>
+                            <button style="padding:4px 10px; font-size:12px; margin-top:5px; width:auto;" onclick="buyP(${p.id}, ${p.price})">Купити</button>
+                        </div>
+                      </div>`;
             }); $('market-list').innerHTML = h;
         }
 
@@ -508,8 +583,8 @@
             const m = state.schedule[state.round-1].find(m => m.h === state.userTeamId || m.a === state.userTeamId);
             state.match = { active: true, playing: false, min: 0, hScore: 0, aScore: 0, hId: m.h, aId: m.a, injuredId: null, otherScores: [], addedTime: null, isHT: false };
             state.schedule[state.round-1].forEach(om => { if(om.h!==state.userTeamId && om.a!==state.userTeamId) state.match.otherScores.push({h:om.h, a:om.a, hS:0, aS:0}); });
-            $('m-name-h').innerText = DB.teams[m.h].n; $('m-logo-h').src = `img/${DB.teams[m.h].img}`;
-            $('m-name-a').innerText = DB.teams[m.a].n; $('m-logo-a').src = `img/${DB.teams[m.a].img}`;
+            $('m-name-h').innerText = DB.teams.find(x=>x.id===m.h).n; $('m-logo-h').src = `img/${DB.teams.find(x=>x.id===m.h).img}`;
+            $('m-name-a').innerText = DB.teams.find(x=>x.id===m.a).n; $('m-logo-a').src = `img/${DB.teams.find(x=>x.id===m.a).img}`;
             $('m-score-h').innerText='0'; $('m-score-a').innerText='0'; $('m-time').innerText="0'"; $('m-events').innerHTML="";
             $('main-nav').style.display='none'; $('game-ui').style.display='none'; $('match-screen').style.display='flex';
             eng.half = 1; eng.speed = 1; $('speed-btn').innerText = '1x';
@@ -581,7 +656,7 @@
 
         function physTick() {
             if(eng.state === 'goal' || eng.state === 'var' || eng.state === 'penalty' || eng.state === 'check') return;
-            let hC = DB.teams[state.match.hId].coef, aC = DB.teams[state.match.aId].coef;
+            let hC = DB.teams.find(x=>x.id===state.match.hId).coef, aC = DB.teams.find(x=>x.id===state.match.aId).coef;
             
             if(eng.state === 'kickoff') {
                 let cm = eng.dots.filter(d=>d.t===eng.teamBall && d.bx>40 && d.bx<60);
@@ -614,7 +689,7 @@
                 
                 if(eng.ball.x <= 0 || eng.ball.x >= 100) {
                     if(eng.ball.y >= 38 && eng.ball.y <= 62) {
-                        let defendTeam = eng.ball.x <= 0 ? (eng.half===1?'h':'a') : (eng.half===1?'a':'h');
+                        let defendTeam = eng.ball.x <= 0 ? (eng.half===1?'a':'h') : (eng.half===1?'h':'a');
                         let attackTeam = defendTeam === 'h' ? 'a' : 'h';
                         let gk = eng.dots.find(d => d.t === defendTeam && d.p && d.p.pos === 'ВР');
                         let saveChance = gk ? (gk.p.r * 0.5) : 30;
@@ -768,8 +843,10 @@
 
         function checkMatchEvents() {
             state.match.otherScores.forEach(om => {
-                if(rand(1,100) > 96) { 
-                    if(rand(0,1)===0) om.hS++; else om.aS++;
+                let omHC = DB.teams.find(x=>x.id===om.h).coef;
+                let omAC = DB.teams.find(x=>x.id===om.a).coef;
+                if(rand(1, 150) === 1) { 
+                    if(rand(1, 100) < (omHC / (omHC + omAC)) * 100) om.hS++; else om.aS++;
                 }
             });
             
@@ -823,7 +900,7 @@
 
         function showHTModal(title) {
             $('ht-title').innerText = title;
-            let h=''; state.match.otherScores.forEach(om => { h += `<div style="display:flex; justify-content:space-between; font-size:12px; border-bottom:1px solid #eee; padding:5px 0;"><span style="flex:1; text-align:right;">${DB.teams[om.h].n}</span><span style="font-weight:bold; margin:0 10px;">${om.hS} - ${om.aS}</span><span style="flex:1;">${DB.teams[om.a].n}</span></div>`; });
+            let h=''; state.match.otherScores.forEach(om => { h += `<div style="display:flex; justify-content:space-between; font-size:12px; border-bottom:1px solid #eee; padding:5px 0;"><span style="flex:1; text-align:right;">${DB.teams.find(x=>x.id===om.h).n}</span><span style="font-weight:bold; margin:0 10px;">${om.hS} - ${om.aS}</span><span style="flex:1;">${DB.teams.find(x=>x.id===om.a).n}</span></div>`; });
             $('ht-scores').innerHTML = h;
             if(title === 'Матч завершено') { 
                 $('btn-ht-sub').style.display = 'none'; $('btn-ht-resume').innerText = "Завершити матч"; $('btn-ht-resume').onclick = finishMatch; 
@@ -850,7 +927,7 @@
             
             let restDays = rand(4,8); state.currentDate.setDate(state.currentDate.getDate() + restDays);
             state.players.forEach(p => { p.stam += (restDays*12); if(p.stam>100) p.stam=100; });
-            state.round++; updateDateUI(); renderSquad(); renderStandings(); nav('tab-table', document.querySelectorAll('.nav-item')[1]); saveGame();
+            state.round++; updateDateUI(); renderSquad(); renderStandings(); nav('tab-table', document.querySelectorAll('.nav-item')[1]); renderProfile(); saveGame();
         }
     </script>
 </body>
