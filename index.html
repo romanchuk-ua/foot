@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>UPL Coach PRO - Ultra Real Engine</title>
+    <title>UPL Coach PRO - Ultra Real Engine (Transfer Update)</title>
     <style>
         :root {
             --bg-color: #f0f4f8; --container-bg: #ffffff; --primary: #0f8574; --primary-dark: #0a6659;
@@ -126,14 +126,43 @@
         .ev-inj { color: var(--danger); font-weight: bold; }
         .ev-var { color: #8e44ad; font-weight: bold; }
         
-        .list-row { display: flex; padding: 12px 10px; border-bottom: 1px solid var(--border); background: var(--container-bg); align-items: center; font-size: 14px; border-radius: 8px; margin-bottom: 5px; }
-        .t-pos { width: 25px; font-weight: bold; text-align: center; }
-        .t-logo { width: 24px; height: 24px; object-fit: contain; margin: 0 10px; }
-        .t-name { flex: 1; font-weight: 500; }
-        .t-stat { width: 25px; text-align: center; }
+        .list-row { display: flex; padding: 12px 10px; border-bottom: 1px solid var(--border); background: var(--container-bg); align-items: center; font-size: 14px; border-radius: 8px; margin-bottom: 5px; transition: 0.2s; }
+        .t-pos { width: 20px; font-weight: bold; text-align: center; }
+        .t-logo { width: 24px; height: 24px; object-fit: contain; margin: 0 8px; }
+        .t-name { flex: 1; font-weight: 500; font-size: 13px; }
+        .t-stat { width: 20px; text-align: center; font-size: 13px; }
         .modal-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.6); display: none; z-index: 200; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: var(--container-bg); border-radius: 12px; width: 100%; max-width: 400px; padding: 20px; max-height: 80vh; overflow-y: auto; }
         .modal-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: var(--primary); text-align: center; }
+        
+        /* Ринок */
+        .market-tabs { display: flex; background: #e0e6ed; border-radius: 8px; padding: 4px; margin-bottom: 15px; }
+        .m-tab { flex: 1; text-align: center; padding: 8px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; color: var(--text-main); transition: 0.2s; }
+        .m-tab.active { background: var(--primary); color: white; }
+        .offer-banner { background: #fff3cd; border: 1px solid #ffeeba; padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; display: flex; flex-direction: column; gap: 8px; animation: fadeIn 0.3s; color: #856404; }
+
+        .market-filters { background: var(--container-bg); padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .filter-row { display: flex; gap: 8px; margin-bottom: 8px; }
+        .filter-row select { flex: 1; padding: 8px; font-size: 13px; border-radius: 6px; background: #f8f9fa; border: 1px solid #ced4da; font-weight: 500; }
+        .sort-select { width: 100%; padding: 10px; font-size: 13px; border-radius: 6px; background: var(--primary); color: white; border: none; font-weight: bold; outline: none; }
+        
+        /* Історія форми + Легенда таблиці */
+        .table-legend { margin-top: 15px; font-size: 11px; color: var(--text-muted); padding: 10px; background: var(--container-bg); border-radius: 8px; border: 1px solid var(--border); text-align: left; }
+        .leg-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-weight: 500; }
+        .leg-box { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+        .leg-cl { background: #0d5292; }
+        .leg-lk { background: #7a152b; }
+        .leg-re { background: #c91010; }
+        .leg-pro { background: #ff4d4d; }
+        
+        .form-guide { display: flex; gap: 4px; align-items: center; }
+        .form-box { width: 20px; height: 20px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: white; cursor: pointer; box-shadow: inset 0 -2px rgba(0,0,0,0.15); transition: transform 0.1s; }
+        .form-box:active { transform: scale(0.9); }
+        .fb-next { background: #6c757d; }
+        .fb-w { background: #2ecc71; }
+        .fb-d { background: #f39c12; color: white; }
+        .fb-l { background: #e74c3c; }
+        .fb-empty { background: #e0e0e0; box-shadow: none; cursor: default; }
     </style>
 </head>
 <body>
@@ -198,7 +227,7 @@
 
         <div id="tab-table" class="game-tab">
             <div style="display:flex; padding:0 10px; font-size:12px; font-weight:bold; color:var(--text-muted);">
-                <span class="t-pos">#</span><span style="flex:1; margin-left:34px;">Клуб</span>
+                <span class="t-pos">#</span><span style="flex:1; margin-left:14px;">Клуб</span>
                 <span class="t-stat">І</span><span class="t-stat">В</span><span class="t-stat">Н</span><span class="t-stat">П</span><span class="t-stat" style="color:var(--text-main)">О</span>
             </div>
             <div id="table-list"></div>
@@ -209,6 +238,33 @@
                 <h2 style="margin:0;">Ринок</h2>
                 <div style="font-weight:bold; color:var(--primary);">Бюджет: $<span id="lbl-budget"></span>M</div>
             </div>
+            
+            <div id="offers-container"></div>
+
+            <div class="market-tabs">
+                <div class="m-tab active" id="m-tab-buy" onclick="toggleMarketMode('buy')">Купити гравців</div>
+                <div class="m-tab" id="m-tab-sell" onclick="toggleMarketMode('sell')">Свої гравці</div>
+            </div>
+
+            <div id="market-filters-wrap" class="market-filters">
+                <div class="filter-row">
+                    <select id="filter-team" onchange="renderMarket()">
+                        <option value="all">Оберіть команду</option>
+                    </select>
+                    <select id="filter-pos" onchange="renderMarket()">
+                        <option value="all">Позиція</option>
+                        <option value="ВР">ВРТ (Воротарі)</option>
+                        <option value="ЗХ">ЗХ (Захисники)</option>
+                        <option value="ПЗ">ПЗ (Півзахисники)</option>
+                        <option value="НП">НП (Нападники)</option>
+                    </select>
+                </div>
+                <select id="sort-by" class="sort-select" onchange="renderMarket()">
+                    <option value="ovr">Сортувати за ОБЩ (Найкращі)</option>
+                    <option value="price">Сортувати за Ціною (Найдорожчі)</option>
+                </select>
+            </div>
+            
             <div id="market-list"></div>
         </div>
 
@@ -312,12 +368,43 @@
             <button onclick="resumeMatchFromHT()" id="btn-ht-resume">Другий тайм</button>
         </div>
     </div>
+    
+    <!-- Модалка оренди (щоб взяти) -->
+    <div class="modal-overlay" id="loan-modal" onclick="if(event.target==this)closeModal('loan-modal')">
+        <div class="modal-content">
+            <div class="modal-title">Оформлення оренди</div>
+            <div id="loan-info" style="margin-bottom:15px; font-size:14px; text-align:center;"></div>
+            <div style="margin-bottom:20px;">
+                <label style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <span>Ваша частка зарплати:</span>
+                    <span style="font-weight:bold; color:var(--primary);"><span id="loan-wage-val">50</span>%</span>
+                </label>
+                <input type="range" id="loan-wage-slider" min="0" max="100" step="5" value="50" style="width:100%;" oninput="$('loan-wage-val').innerText=this.value">
+            </div>
+            <button onclick="submitLoan()">Запропонувати</button>
+            <button class="secondary" onclick="closeModal('loan-modal')">Скасувати</button>
+        </div>
+    </div>
+
+    <!-- Нова модалка для продажу / здачі в оренду -->
+    <div class="modal-overlay" id="sell-modal" onclick="if(event.target==this)closeModal('sell-modal')">
+        <div class="modal-content">
+            <div class="modal-title" id="sell-modal-title">Виставити на трансфер</div>
+            <div id="sell-modal-info" style="font-size:13px; color:var(--text-muted); margin-bottom:15px; text-align:center;"></div>
+            <div style="margin-bottom:20px;">
+                <label style="font-size:12px; font-weight:bold;">Ваша ціна (млн $):</label>
+                <input type="number" id="sell-price-input" step="0.1" min="0.1" max="25" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border);">
+            </div>
+            <button onclick="confirmListPlayer()">Підтвердити</button>
+            <button class="secondary" onclick="closeModal('sell-modal')">Скасувати</button>
+        </div>
+    </div>
 
     <script>
         const SQUADS = {
             0: [['ВР','Р. Нещерет',74,35], ['ЗХ','М. Коробов',68,13], ['ЗХ','К. Біловар',72,40], ['ЗХ','Т. Михавко',75,32], ['ЗХ','К. Вівчаренко',75,2], ['ПЗ','В. Бражко',80,6], ['ПЗ','Н. Волошин',76,9], ['ПЗ','О. Піхальонок',78,8], ['ПЗ','М. Шапаренко',82,10], ['ПЗ','Б. Редушко',65,70], ['НП','М. Пономаренко',69,11], ['ВР','В. Моргун',66,51], ['ВР','В. Суркіс',64,71], ['ВР','Д. Ігнатенко',65,74], ['ЗХ','Д. Попов',78,4], ['ЗХ','О. Караваєв',77,20], ['ЗХ','А. Тіаре',65,66], ['ЗХ','В. Захарченко',64,34], ['ЗХ','О. Тимчик',79,18], ['ЗХ','В. Дубінчак',77,44], ['ПЗ','В. Кабаєв',77,22], ['ПЗ','В. Буяльський',81,29], ['ПЗ','А. Ярмоленко',80,7], ['ПЗ','М. Михайленко',72,91], ['ПЗ','К. Осипенко',66,28], ['ПЗ','О. Яцик',73,5], ['ПЗ','В. Озимай',64,80], ['ПЗ','Ш. Огундана',65,16], ['НП','Е. Герреро',76,39], ['НП','В. Бленуце',68,77]],
             1: [['ВР','Д. Різник',81,31],['ЗХ','Ю. Конопля',80,26],['ЗХ','В. Бондар',79,5],['ЗХ','М. Матвієнко',82,22],['ЗХ','П. Енріке',77,13],['ПЗ','О. Очеретько',75,27],['ПЗ','Аліссон',75,30],['ПЗ','А. Бондаренко',80,21],['ПЗ','М. Гомес',77,6],['ПЗ','Д. Криськів',78,8],['НП','К. Еліас',74,19],['ВР','К. Фесюн',73,23],['ВР','Р. Баглай',65,34],['ВР','Д. Твардовський',68,48],['ЗХ','І. Азаров',76,16],['ЗХ','Д. Арройо',70,3],['ЗХ','А. Грам',74,18],['ЗХ','Марлон',76,4],['ЗХ','В. Тобіас',75,17],['ПЗ','Ізаке',72,14],['ПЗ','М. Швед',76,9],['ПЗ','Педрінью',77,10],['ПЗ','Є. Назарина',76,29],['ПЗ','Д. Сметана',65,45],['ПЗ','Невертон',76,11],['ПЗ','В. Цуканов',69,24],['ПЗ','П. Оба',65,68],['НП','Л. Траоре',78,2],['НП','Л. Феррейра',70,37],['НП','Л. Мейреллес',72,49],['НП','Егіналдо',76,7]],
-            2: [['ВР','А. Кліщук',73,33],['ЗХ','А. Понєдєльнік',72,7],['ЗХ','О. Романчук',71,3],['ЗХ','Т. Стецьков',72,5],['ЗХ','І. Дібанго',74,55],['ПЗ','Д. Бізімана',73,8],['ПЗ','Ю. Вакулко',72,22],['ПЗ','М. Луньов',70,14],['НП','М. Задерака',73,94],['НП','Д. Аду',74,80],['НП','А. Микитишин',71,11],['ВР','В. Маханьков',68,30],['ЗХ','Р. Бандейра',70,2],['ЗХ','В. Корнієнко',72,9],['ПЗ','Д. Кузик',71,21],['ПЗ','Х. Іліч',72,23],['НП','О. Кожушко',72,78],['НП','Ж. Соса',73,19]],
+            2: [['ВР','О. Кемкін',73,12],['ЗХ','Я. Юрчец',71,2],['ЗХ','В. Вілівальд',70,4],['ЗХ','Д. Джонс',72,15],['ЗХ','І. Дібанго',74,55],['ПЗ','А. Араухо',72,6],['ПЗ','Б. Лін',71,18],['ПЗ','М. Задерака',73,94],['ПЗ','Є. Твердохліб',72,11],['ПЗ','Г. Мендоса',71,7],['НП','К. Парако',72,9],['ВР','В. Маханьков',68,30],['ЗХ','К. Рохас',71,3],['ЗХ','А. Бекавац',70,5],['ПЗ','Я. Шевченко',68,8],['ПЗ','А. Сек',69,14],['НП','В. Мулик',69,24],['НП','А. Микитишин',71,77],['ВР','Д. Сичов',65,23],['ВР','Б. Хома',64,1],['ВР','А. Дударенко',63,46],['ЗХ','Є. Коробка',65,26],['ЗХ','І. Кононихін',64,61],['ЗХ','Є. Маяков',66,19],['ЗХ','Т. Боржес',70,16],['ПЗ','Д. Герберт',68,10],['ПЗ','О. Каменський',65,21],['ПЗ','Т. Бутенко',66,25],['ПЗ','Д. Майя',67,28],['НП','М. Боднар',65,20],['НП','Ш. Адам',68,99]],
             3: [['ВР','Г. Бущан',78,21],['ЗХ','Г. Майсурадзе',73,31],['ЗХ','С. Чоботенко',75,44],['ЗХ','Е. Сарапій',76,5],['ЗХ','Б. Михайліченко',75,15],['ПЗ','Р. Бабенко',74,8],['ПЗ','О. Гуцуляк',78,11],['ПЗ','О. Андрієвський',75,18],['ПЗ','Л. Емерлаху',74,14],['ПЗ','М. Брагару',75,45],['НП','І. Краснопір',75,95],['ВР','О. Кудрик',72,1],['ВР','Є. Волинець',76,23],['ЗХ','М. Кравченко',73,4],['ЗХ','І. Краснічі',72,16],['ЗХ','Л. Тейлор',71,3],['ЗХ','Ж. Віалле',70,34],['ПЗ','Б. Крушинський',73,55],['ПЗ','Б. Томандзото',72,29],['ПЗ','В. Велетень',71,22],['ПЗ','В. Шепелєв',74,19],['ПЗ','О. Федор',71,27],['ПЗ','О. Назаренко',77,7],['ПЗ','Б. Лєднєв',75,30],['ПЗ','Т. Йосефі',73,10],['НП','М. Гайдучик',72,89],['НП','О. Філіппов',74,9],['ПЗ','Д. Йока',69,70],['ЗХ','Е. Хадрой',71,2],['ВР','Д. Сунцов',65,33]],
             4: [['ВР','Д. Ледвій',72,23],['ЗХ','О. Сич',74,77],['ЗХ','В. Холод',71,4],['ЗХ','Р. Дідик',72,29],['ЗХ','В. Роман',73,93],['ПЗ','М. Сапуга',73,10],['ПЗ','Д. Підгурський',70,15],['ПЗ','О. Притула',71,22],['НП','І. Квасниця',75,9],['НП','Ю. Климчук',74,11],['НП','Я. Карабін',70,89],['ВР','Ю. Герета',67,1],['ЗХ','Б. Слюбик',73,92],['ЗХ','О. Товарницький',69,3],['ПЗ','Таллес',72,30],['ПЗ','І. Слюсар',69,8],['НП','А. Плюман',72,22],['НП','О. Федор',71,7]],
             5: [['ВР','О. Паламарчук',72,12],['ЗХ','Г. Пасіч',72,11],['ЗХ','Н. Муравський',72,34],['ЗХ','О. Горін',71,25],['ЗХ','О. Драмбаєв',71,14],['ПЗ','А. Рябов',70,16],['ПЗ','А. Якубу',71,8],['ПЗ','В. Танковський',74,6],['ПЗ','Є. Пастух',72,19],['ПЗ','Д. Кузик',72,17],['НП','М. Ассінор',73,90],['ВР','Д. Ледвій',71,1],['ВР','К. Самойленко',65,72],['ЗХ','І. Путря',71,33],['ЗХ','А. Дайко',70,4],['ЗХ','Р. Дідик',72,29],['ПЗ','Ш. Нонікашвілі',73,5],['ПЗ','М. Яшарі',72,10],['ПЗ','Д. Беннетт',71,27],['ПЗ','А. Авуду',70,18],['ПЗ','Є. Твердохліб',71,22],['ПЗ','А. Микитишин',71,7],['НП','Д. Кравчук',69,23],['НП','О. Лепський',65,21],['ПЗ','М. Тлумак',68,20],['ПЗ','М. Подоляк',66,24],['ПЗ','Д. Благодарний',65,28],['ЗХ','Н. Смотрицький',64,99]],
@@ -328,7 +415,7 @@
             10: [['ВР','О. Кемкін',73,1],['ЗХ','П. Полегенько',71,2],['ЗХ','В. Бабогло',74,4],['ЗХ','Ж. Адаменко',70,5],['ЗХ','Т. Саків',71,14],['ПЗ','В. Клименко',72,6],['ПЗ','А. Чачуа',73,8],['ПЗ','П. Альварес',74,10],['НП','Стеніо',72,7],['НП','Ігор Невес',73,9],['НП','Я. Костенко',71,11],['ВР','Я. Кінарейкін',69,31],['ЗХ','А. Рябов',68,3],['ЗХ','Д. Мірошніченко',72,24],['ПЗ','О. Кузик',70,22],['ПЗ','Ю. Тлумак',69,17],['НП','А. Підлепенець',71,21],['НП','М. Баранець',68,19]],
             11: [['ВР','О. Білик',72,31], ['ЗХ','І. Кирюханцев',73,70], ['ЗХ','В. Мороз',71,4], ['ЗХ','Н. Кок',72,77], ['ЗХ','О. Климець',70,97], ['ПЗ','Є. Запорожець',73,5], ['ПЗ','М. Миронюк',71,8], ['ПЗ','К. Рохас',72,99], ['ПЗ','В. Сидун',70,20], ['ПЗ','Х. Себеріо',71,39], ['НП','Х. Сіфуентес',73,9], ['ВР','М. Федотов',68,71], ['ВР','А. Вавшко',65,37], ['ЗХ','В. Танчик',72,34], ['ЗХ','А. Олівейра',71,2], ['ЗХ','С. Григоращук',68,3], ['ЗХ','В. Лучкевич',73,67], ['ПЗ','К. Ковалець',74,6], ['ПЗ','В. Супряга',72,21], ['ПЗ','А. Ліповуз',68,28], ['ПЗ','Є. Демченко',70,17], ['ПЗ','А. Беженар',69,10], ['ПЗ','А. Маткевич',67,7], ['ПЗ','Д. Голуб',66,15], ['ПЗ','А. Нервуца',65,24], ['ЗХ','В. Кристін',66,22], ['ЗХ','С. Кристін',66,11], ['НП','А. Борячук',72,23]],
             12: [['ВР','А. Яшков',66,1],['ЗХ','М. Сердюк',65,2],['ЗХ','Р. Мачелюк',64,4],['ЗХ','Д. Галенков',66,5],['ЗХ','М. Потрохов',64,14],['ПЗ','А. Думанюк',65,6],['ПЗ','А. Сторчоус',67,8],['ПЗ','Є. Чепурненко',68,10],['НП','Я. Квасов',67,7],['НП','Д. Коркішко',69,9],['НП','В. Студенко',65,11],['ВР','Д. Таран',63,31],['ЗХ','О. Здоренко',62,3],['ЗХ','В. Васько',64,21],['ПЗ','Д. Тепляков',64,22],['ПЗ','М. Євтушенко',65,17],['НП','А. Волошин',66,19],['НП','Р. Сомов',65,18]],
-            13: [['ВР','О. Мозіль',71,1],['ЗХ','Д. Капінус',69,2],['ЗХ','М. Імереков',72,4],['ЗХ','В. Курило',70,5],['ЗХ','М. Безуглий',69,14],['ПЗ','А. Габелок',71,6],['ПЗ','Б. Вачіберадзе',70,8],['ПЗ','В. Юрченко',73,10],['НП','Р. Русин',72,7],['НП','А. Борячук',73,9],['НП','О. Сидоров',71,11],['ВР','І. Проценко',66,31],['ЗХ','В. Червак',68,3],['ЗХ','Є. Ткачук',69,21],['ПЗ','С. Обінайя',67,22],['ПЗ','Д. Кравченко',70,17],['НП','Д. Гармаш',72,19],['НП','М. Арі Моура',71,18]],
+            13: [['ВР','Д. Варакута',73,30], ['ЗХ','О. Мартинюк',71,24], ['ЗХ','А. Шабанов',72,31], ['ЗХ','Є. Павлюк',70,18], ['ЗХ','І. Крупський',72,27], ['ПЗ','І. Калюжний',74,5], ['ПЗ','Е. Рашица',71,19], ['ПЗ','І. Литвиненко',70,25], ['ПЗ','В. Калітвінцев',72,45], ['ПЗ','Д. Антюх',73,15], ['НП','П. Ітодо',71,98], ['ЗХ','В. Салюк',71,13], ['ЗХ','В. Дубко',68,37], ['ПЗ','В. Чурко',70,11], ['ПЗ','Н. Аревало',69,16], ['НП','С. Кастільо',70,8], ['НП','Арі Моура',71,7], ['ПЗ','Б. Заберґя',68,26], ['ВР','О. Мозіль',71,1], ['ВР','Я. Проценко',66,23], ['ЗХ','Д. Капінус',69,2], ['ЗХ','І. Снурніцин',70,74], ['ПЗ','І. Когут',70,17], ['ПЗ','К. Баптістелла',69,77], ['ПЗ','Р. Гаджиєв',68,14], ['НП','К. Мба',69,99], ['ВР','М. Соловей',65,12], ['ВР','М. Гончаров',64,95], ['ВР','О. Томін',63,71], ['ПЗ','О. Плічко',64,85], ['ПЗ','Д. Кондратюк',65,44], ['ПЗ','І. Хруник',64,47], ['НП','Я. Карпізін',65,73], ['НП','І. Багрій',66,70], ['НП','А. Король',64,88]],
             14: [['ВР','О. Рибка',71,1],['ЗХ','Д. Карась',69,2],['ЗХ','В. Приймак',71,4],['ЗХ','В. Дубко',68,5],['ЗХ','О. Осман',69,14],['ПЗ','Р. Черненко',72,6],['ПЗ','Т. Мороз',70,8],['ПЗ','В. Груша',71,10],['НП','І. Мединський',70,7],['НП','С. Суханов',72,9],['НП','Р. Тарануха',71,11],['ВР','Н. Федорівський',69,31],['ЗХ','П. Лук\'янчук',67,3],['ЗХ','А. Ломницький',66,21],['ПЗ','О. Слободян',70,22],['ПЗ','С. Косовський',69,17],['НП','Є. Прокопенко',68,19],['НП','М. Блізніченко',70,18]],
             15: [['ВР','Б. Когут',71,1],['ЗХ','В. Гакман',69,2],['ЗХ','В. Курко',70,4],['ЗХ','С. Вовченко',71,5],['ЗХ','Д. Сміян',68,14],['ПЗ','В. Кучеров',71,6],['ПЗ','Д. Кльоц',70,8],['ПЗ','В. Дахновський',72,10],['НП','В. Шарай',71,7],['НП','М. Сікейра',72,9],['НП','М. Мрвальєвич',73,11],['ВР','Є. Паст',70,31],['ЗХ','Р. Мельник',67,3],['ЗХ','О. Кучеренко',68,21],['ПЗ','Д. Годя',68,22],['ПЗ','Я. Кухарук',69,17],['НП','Р. Гагун',67,19],['НП','Д. Світюха',68,18]]
         };
@@ -355,39 +442,46 @@
         };
 
         let state = { 
-            userTeamId: 0, coach: '', budget: 25, players: [], standings: [], round: 1, schedule: [], tactic: '4-1-4-1', press: 0, capId: null,
+            userTeamId: 0, coach: '', budget: 25, players: [], standings: [], round: 1, schedule: [], tactic: '4-1-4-1', press: 0, capId: null, marketSort: 'ovr',
             currentDate: new Date(2026, 7, 1),
-            match: { active: false, playing: false, min: 0, hScore: 0, aScore: 0, hId: 0, aId: 0, injuredId: null, otherScores: [], addedTime: null, isHT: false }
+            match: { active: false, playing: false, min: 0, hScore: 0, aScore: 0, hId: 0, aId: 0, injuredId: null, otherScores: [], addedTime: null, isHT: false },
+            marketMode: 'buy', listedPlayers: [], offers: []
         };
         let mTimers = { tick: null, phys: null }; 
 
         const $ = id => document.getElementById(id);
         const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
         
-        function saveGame() { localStorage.setItem('upl_save_pro_final', JSON.stringify(state)); }
+        window.showInfo = function(str) { alert(str.replace(/\|/g, '\n')); };
+
+        function saveGame() { localStorage.setItem('upl_save_pro_final3', JSON.stringify(state)); }
         function loadGame() {
-            let saved = localStorage.getItem('upl_save_pro_final');
+            let saved = localStorage.getItem('upl_save_pro_final3');
             if(saved) {
                 state = JSON.parse(saved); state.currentDate = new Date(state.currentDate);
                 state.match.active = false; state.match.playing = false; 
                 $('lbl-tactic').innerText = state.tactic;
+                if(!state.marketSort) state.marketSort = 'ovr';
+                if(!state.marketMode) state.marketMode = 'buy';
+                if(!state.listedPlayers) state.listedPlayers = [];
+                if(!state.offers) state.offers = [];
                 return true;
             } return false;
         }
 
         window.onload = () => {
-            if(localStorage.getItem('upl_logged_in_pro_final') === 'true') {
+            if(localStorage.getItem('upl_logged_in_pro_final3') === 'true') {
                 $('login-screen').classList.remove('active-screen');
                 if(loadGame()) {
                     $('game-ui').style.display = 'flex';
-                    updateDateUI(); renderSquad(); renderStandings(); renderMarket(); setupPointerDragAndDrop(); renderProfile();
+                    updateDateUI(); renderSquad(); renderStandings(); toggleMarketMode(state.marketMode); setupPointerDragAndDrop(); renderProfile();
                 } else { initTeams(); }
             }
         };
 
         function login() { 
             let e = $('email').value, p = $('password').value; if(!e||!p) return;
-            localStorage.setItem('upl_logged_in_pro_final', 'true');
+            localStorage.setItem('upl_logged_in_pro_final3', 'true');
             $('login-screen').classList.remove('active-screen'); initTeams(); 
         }
 
@@ -405,16 +499,12 @@
             state.coach = isCustom ? `${$('c-fname').value} ${$('c-lname').value}` : DB.teams[state.userTeamId].c;
             if(!state.coach || state.coach.trim() === '') state.coach = 'Невідомий Тренер';
             
-            if(state.userTeamId === 11) {
-                state.tactic = '4-2-3-1';
-                $('lbl-tactic').innerText = '4-2-3-1';
-            } else {
-                state.tactic = '4-1-4-1';
-                $('lbl-tactic').innerText = '4-1-4-1';
-            }
+            if(state.userTeamId === 11) { state.tactic = '4-2-3-1'; $('lbl-tactic').innerText = '4-2-3-1'; } 
+            else if (state.userTeamId === 2 || state.userTeamId === 13) { state.tactic = '4-1-4-1'; $('lbl-tactic').innerText = '4-1-4-1'; } 
+            else { state.tactic = '4-1-4-1'; $('lbl-tactic').innerText = '4-1-4-1'; }
             
             $('coach-screen').classList.remove('active-screen'); generateWorld(); $('game-ui').style.display = 'flex';
-            updateDateUI(); renderSquad(); renderStandings(); renderMarket(); setupPointerDragAndDrop(); renderProfile(); saveGame();
+            updateDateUI(); renderSquad(); renderStandings(); toggleMarketMode('buy'); setupPointerDragAndDrop(); renderProfile(); saveGame();
         }
 
         function generateWorld() {
@@ -424,11 +514,15 @@
                 for(let i=0; i<SQUADS[t.id].length; i++) {
                     let pData = SQUADS[t.id][i];
                     let price = Math.max(0.5, Math.round((pData[2]-60)*0.5 * 10)/10);
-                    state.players.push({ id: pid++, tId: t.id, pos: pData[0], name: pData[1], r: pData[2], stam: rand(85, 100), num: pData[3], slot: i, inj: false, price: price });
+                    state.players.push({ id: pid++, tId: t.id, pos: pData[0], name: pData[1], r: pData[2], stam: rand(85, 100), num: pData[3], slot: i, inj: false, price: price, loanedFrom: null });
                 }
             });
             let myP = state.players.filter(p=>p.tId===state.userTeamId && p.slot<11).sort((a,b)=>b.r-a.r);
             state.capId = myP[0].id;
+
+            if (state.userTeamId === 11) { let cap = state.players.find(p => p.tId===11 && p.name.includes('Мороз')); if(cap) state.capId=cap.id; }
+            if (state.userTeamId === 3) { let cap = state.players.find(p => p.tId===3 && p.name.includes('Гуцуляк')); if(cap) state.capId=cap.id; }
+            if (state.userTeamId === 13) { let cap = state.players.find(p => p.tId===13 && p.name.includes('Калюжний')); if(cap) state.capId=cap.id; }
 
             let ids = DB.teams.map(t=>t.id);
             for(let r=1; r<=30; r++) {
@@ -451,8 +545,7 @@
 
         function confirmEndCareer() {
             if(confirm("Ви впевнені, що хочете завершити кар'єру? Увесь прогрес буде видалено!")) {
-                localStorage.removeItem('upl_save_pro_final');
-                location.reload();
+                localStorage.removeItem('upl_save_pro_final3'); location.reload(); 
             }
         }
 
@@ -550,16 +643,56 @@
             document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active')); 
             $(id).classList.add('active-tab'); el.classList.add('active'); 
             if(id === 'tab-profile') renderProfile();
+            if(id === 'tab-market') renderMarket();
         }
         function openModal(id) { $(id).style.display = 'flex'; if(id==='cap-modal') { let h=''; state.players.filter(p=>p.tId===state.userTeamId && p.slot<11).forEach(p=>h+=`<button class="secondary" onclick="state.capId=${p.id}; closeModal('cap-modal'); renderSquad(); saveGame();">${p.name}</button>`); $('cap-list').innerHTML=h; } }
         function closeModal(id) { $(id).style.display = 'none'; }
         
+        function getFormHtml(tId) {
+            let html = '<div class="form-guide">';
+            if(state.round <= 30) {
+                let nm = state.schedule[state.round-1].find(m => m.h === tId || m.a === tId);
+                let homeT = DB.teams.find(x => x.id === nm.h); let oppT = DB.teams.find(x => x.id === nm.a);
+                let d = new Date(state.currentDate); let info = `${d.toLocaleDateString('uk-UA')} ${state.round} тур|${homeT.st}|18:00|${homeT.n} - ${oppT.n}`;
+                html += `<div class="form-box fb-next" onclick="showInfo('${info}')">?</div>`;
+            } else { html += `<div class="form-box fb-next" onclick="showInfo('Сезон завершено')">?</div>`; }
+            let past = [];
+            for(let r = Math.max(0, state.round - 6); r < state.round - 1; r++) {
+                let m = state.schedule[r].find(x => x.h === tId || x.a === tId); past.push({r: r+1, m: m});
+            }
+            while(past.length < 5) past.unshift(null);
+            past.forEach(item => {
+                if(!item || item.m.hS === undefined) { html += `<div class="form-box fb-empty"></div>`;
+                } else {
+                    let m = item.m; let isH = m.h === tId; let myS = isH ? m.hS : m.aS; let opS = isH ? m.aS : m.hS;
+                    let res = myS > opS ? 'В' : (myS < opS ? 'П' : 'Н'); let cl = myS > opS ? 'fb-w' : (myS < opS ? 'fb-l' : 'fb-d');
+                    let info = `${item.r} тур|${DB.teams.find(x=>x.id===m.h).n} ${m.hS} - ${m.aS} ${DB.teams.find(x=>x.id===m.a).n}`;
+                    html += `<div class="form-box ${cl}" onclick="showInfo('${info}')">${res}</div>`;
+                }
+            });
+            html += '</div>'; return html;
+        }
+
         function renderStandings() {
             state.standings.sort((a,b)=>b.p-a.p); let h='';
             state.standings.forEach((s, i) => {
-                let t = DB.teams.find(x=>x.id===s.id); let c = i===0?'gold':(i>13?'var(--danger)':'transparent');
-                h += `<div class="list-row" style="border-left: 4px solid ${c};"><span class="t-pos">${i+1}</span><img src="img/${t.img}" class="t-logo" onerror="this.src=''"><span class="t-name">${t.n}</span><span class="t-stat">${s.m}</span><span class="t-stat">${s.w}</span><span class="t-stat">${s.d}</span><span class="t-stat">${s.l}</span><span class="t-stat" style="font-weight:bold;">${s.p}</span></div>`;
-            }); $('table-list').innerHTML = h;
+                let t = DB.teams.find(x=>x.id===s.id); let c = 'transparent';
+                if(i===0 || i===1) c = '#0d5292'; else if(i===2 || i===3) c = '#7a152b'; else if(i===12 || i===13) c = '#c91010'; else if(i===14 || i===15) c = '#ff4d4d';
+                h += `<div class="list-row" style="flex-direction:column; align-items:stretch; border-left: 4px solid ${c}; padding: 10px;">
+                        <div style="display:flex; align-items:center;">
+                            <span class="t-pos">${i+1}</span><img src="img/${t.img}" class="t-logo" onerror="this.src=''">
+                            <span class="t-name">${t.n}</span><span class="t-stat">${s.m}</span><span class="t-stat">${s.w}</span><span class="t-stat">${s.d}</span><span class="t-stat">${s.l}</span><span class="t-stat" style="font-weight:bold;">${s.p}</span>
+                        </div>
+                        <div style="display:flex; justify-content:flex-end; margin-top:8px;">${getFormHtml(t.id)}</div>
+                      </div>`;
+            }); 
+            h += `<div class="table-legend">
+                    <div class="leg-row"><div class="leg-box leg-cl"></div>Вихід - Ліга чемпіонів (Етап ліги)</div>
+                    <div class="leg-row"><div class="leg-box leg-lk"></div>Вихід - Ліга конференцій (Кваліфікація)</div>
+                    <div class="leg-row"><div class="leg-box leg-re"></div>Прем'єр-ліга (Вибування)</div>
+                    <div class="leg-row"><div class="leg-box leg-pro"></div>Пониження - Перша ліга</div>
+                  </div>`;
+            $('table-list').innerHTML = h;
         }
 
         function openCalendar() { openModal('cal-modal'); let h='';
@@ -570,38 +703,210 @@
             }); $('cal-list').innerHTML = h;
         }
 
-        function renderMarket() {
-            let h=''; state.players.filter(p=>p.tId!==state.userTeamId).sort((a,b)=>b.price-a.price).slice(0,30).forEach(p => {
-                h += `<div class="market-card" style="display:flex; align-items:center; background:var(--container-bg); padding:10px; margin-bottom:5px; border-radius:8px; border:1px solid var(--border);">
-                        <img src="img/${DB.teams.find(x=>x.id===p.tId).img}" width="30" height="30" onerror="this.src=''">
-                        <div class="m-info" style="flex:1; margin-left:10px;">
-                            <span style="font-weight:bold;">${p.name} <span style="font-size:10px; color:var(--text-muted)">${p.pos} | ${p.r}</span></span><br>
-                            <span style="font-size:12px; color:var(--text-muted)">${DB.teams.find(x=>x.id===p.tId).n}</span>
-                        </div>
-                        <div style="display:flex; flex-direction:column; align-items:flex-end;">
-                            <span class="m-price" style="font-weight:bold; color:var(--primary);">$${p.price.toFixed(1)}M</span>
-                            <button style="padding:4px 10px; font-size:12px; margin-top:5px; width:auto;" onclick="buyP(${p.id}, ${p.price})">Купити</button>
-                        </div>
-                      </div>`;
-            }); $('market-list').innerHTML = h;
+        // ---------- НОВА СИСТЕМА ТРАНСФЕРІВ ----------
+
+        function toggleMarketMode(mode) {
+            state.marketMode = mode;
+            $('m-tab-buy').classList.toggle('active', mode === 'buy');
+            $('m-tab-sell').classList.toggle('active', mode === 'sell');
+            $('market-filters-wrap').style.display = mode === 'buy' ? 'block' : 'none';
+            renderMarket();
         }
 
+        function renderMarket() {
+            $('lbl-budget').innerText = state.budget.toFixed(1);
+            
+            // 1. Рендер Пропозицій (Offers)
+            let offersH = '';
+            state.offers.forEach((off, idx) => {
+                let p = state.players.find(x=>x.id === off.pId);
+                let t = DB.teams.find(x=>x.id === off.from);
+                if(p && t) {
+                    let actionTxt = off.type === 'sell' ? 'купити' : 'взяти в оренду';
+                    offersH += `<div class="offer-banner">
+                        <div><b>${t.n}</b> пропонує <b>$${off.val.toFixed(1)}M</b> щоб ${actionTxt} гравця <b>${p.name}</b>.</div>
+                        <div style="display:flex; gap:10px;">
+                            <button style="background:var(--success); padding:8px; margin:0; width:50%;" onclick="acceptOffer(${idx})">Прийняти</button>
+                            <button style="background:var(--danger); padding:8px; margin:0; width:50%;" onclick="declineOffer(${idx})">Відмовити</button>
+                        </div>
+                    </div>`;
+                }
+            });
+            $('offers-container').innerHTML = offersH;
+
+            // 2. Рендер Ринку (Гравці)
+            let teamSelect = $('filter-team');
+            if (teamSelect.options.length <= 1) {
+                let th = '<option value="all">Оберіть команду</option>';
+                DB.teams.forEach(t => { if (t.id !== state.userTeamId) th += `<option value="${t.id}">${t.n}</option>`; });
+                teamSelect.innerHTML = th;
+            }
+
+            let h=''; 
+            if (state.marketMode === 'buy') {
+                let filterTeam = teamSelect.value; let filterPos = $('filter-pos').value; let sortBy = $('sort-by').value;
+                let players = state.players.filter(p => p.tId !== state.userTeamId && p.loanedFrom === null);
+                
+                if (filterTeam !== 'all') players = players.filter(p => p.tId === parseInt(filterTeam));
+                if (filterPos !== 'all') players = players.filter(p => p.pos === filterPos);
+                
+                players.sort((a,b) => { if (sortBy === 'price') return b.price - a.price; return b.r - a.r; });
+                
+                if (players.length === 0) h = '<div style="text-align:center; color:var(--text-muted); padding:20px;">Гравців не знайдено</div>';
+                else {
+                    players.forEach(p => {
+                        let t = DB.teams.find(x => x.id === p.tId);
+                        h += `<div class="market-card" style="display:flex; align-items:center; background:var(--container-bg); padding:10px; margin-bottom:5px; border-radius:8px; border:1px solid var(--border);">
+                                <img src="img/${t.img}" width="30" height="30" onerror="this.src=''">
+                                <div class="m-info" style="flex:1; margin-left:10px;">
+                                    <span style="font-weight:bold;">${p.name} <span style="font-size:10px; color:var(--text-muted)">${p.pos} | ${p.r}</span></span><br>
+                                    <span style="font-size:12px; color:var(--text-muted)">${t.n}</span>
+                                </div>
+                                <div style="display:flex; flex-direction:column; align-items:flex-end;">
+                                    <span class="m-price" style="font-weight:bold; color:var(--primary);">$${p.price.toFixed(1)}M</span>
+                                    <div style="display:flex; gap:5px; margin-top:5px;">
+                                        <button style="padding:4px 8px; font-size:11px; width:auto; margin:0;" onclick="buyP(${p.id}, ${p.price})">Придбати</button>
+                                        <button class="secondary" style="padding:4px 8px; font-size:11px; width:auto; margin:0;" onclick="openLoanModal(${p.id})">Оренда</button>
+                                    </div>
+                                </div>
+                              </div>`;
+                    });
+                }
+            } else { // РЕЖИМ ПРОДАЖУ
+                let players = state.players.filter(p => p.tId === state.userTeamId);
+                if (players.length === 0) h = '<div style="text-align:center; padding:20px;">Немає гравців</div>';
+                else {
+                    players.sort((a,b)=>b.r-a.r).forEach(p => {
+                        let isListed = state.listedPlayers.find(lp => lp.id === p.id);
+                        h += `<div class="market-card" style="display:flex; align-items:center; background:var(--container-bg); padding:10px; margin-bottom:5px; border-radius:8px; border:1px solid var(--border);">
+                                <div class="m-info" style="flex:1;">
+                                    <span style="font-weight:bold;">${p.name}</span> <span style="font-size:11px; color:var(--text-muted);">${p.pos} | OVR: ${p.r}</span>
+                                    ${p.loanedFrom !== null ? `<br><span style="font-size:10px; color:var(--warning); font-weight:bold;">В оренді у вас</span>` : ''}
+                                </div>
+                                <div style="display:flex; flex-direction:column; align-items:flex-end;">
+                                    ${isListed ? 
+                                    `<span style="font-size:11px; color:var(--primary); font-weight:bold; margin-bottom:5px;">Виставлено: $${isListed.ask}M (${isListed.type==='sell'?'Продаж':'Оренда'})</span>
+                                     <button class="danger" style="padding:4px 8px; font-size:11px; width:auto; margin:0;" onclick="cancelListing(${p.id})">Зняти з ринку</button>` 
+                                    : 
+                                    `<span style="font-size:11px; color:var(--text-muted); margin-bottom:5px;">Варто: ~$${p.price.toFixed(1)}M</span>
+                                     <div style="display:flex; gap:5px;">
+                                         <button style="padding:4px 8px; font-size:11px; width:auto; margin:0; ${p.loanedFrom !== null ? 'opacity:0.5; pointer-events:none;' : ''}" onclick="openSellModal(${p.id}, 'sell')">Продати</button>
+                                         <button class="secondary" style="padding:4px 8px; font-size:11px; width:auto; margin:0; ${p.loanedFrom !== null ? 'opacity:0.5; pointer-events:none;' : ''}" onclick="openSellModal(${p.id}, 'loan')">В оренду</button>
+                                     </div>`
+                                    }
+                                </div>
+                            </div>`;
+                    });
+                }
+            }
+            $('market-list').innerHTML = h;
+        }
+
+        // КУПІВЛЯ (Користувач купує)
         function buyP(id, pr) {
             if(state.budget < pr) return alert("Недостатньо коштів!");
             if(confirm(`Придбати за $${pr.toFixed(1)}M?`)) {
-                state.budget -= pr; let p = state.players.find(x=>x.id===id); p.tId = state.userTeamId; 
-                p.slot = Math.max(...state.players.filter(x=>x.tId===state.userTeamId).map(x=>x.slot)) + 1;
-                $('lbl-budget').innerText = state.budget.toFixed(1); renderSquad(); renderMarket(); saveGame(); alert("Трансфер успішний!");
+                state.budget -= pr; let p = state.players.find(x=>x.id===id); p.tId = state.userTeamId; p.loanedFrom = null;
+                p.slot = Math.max(...state.players.filter(x=>x.tId===state.userTeamId).map(x=>x.slot), -1) + 1;
+                renderSquad(); renderMarket(); saveGame(); alert("Трансфер успішний!");
             }
+        }
+
+        // ОРЕНДА (Користувач бере в оренду)
+        let activeLoanId = null;
+        function openLoanModal(id) {
+            activeLoanId = id; let p = state.players.find(x=>x.id===id); let t = DB.teams.find(x=>x.id===p.tId);
+            let fee = (p.price * 0.15).toFixed(1);
+            $('loan-info').innerHTML = `<b>${p.name}</b> (ОБЩ: ${p.r})<br>Клуб: ${t.n}<br>Плата за оренду на сезон: <b>$${fee}M</b>`;
+            $('loan-wage-slider').value = 50; $('loan-wage-val').innerText = 50;
+            openModal('loan-modal');
+        }
+        function submitLoan() {
+            let p = state.players.find(x=>x.id===activeLoanId); let t = DB.teams.find(x=>x.id===p.tId);
+            let fee = parseFloat((p.price * 0.15).toFixed(1));
+            if (state.budget < fee) return alert("Недостатньо коштів для оплати оренди!");
+            
+            let reqWage = Math.floor((p.r - 60) * 2.5 + (6 - t.rank) * 10);
+            if (reqWage < 0) reqWage = 0; if (reqWage > 100) reqWage = 100;
+            let offeredWage = parseInt($('loan-wage-slider').value);
+            
+            if (offeredWage >= reqWage) {
+                state.budget -= fee; p.loanedFrom = p.tId; p.tId = state.userTeamId;
+                p.slot = Math.max(...state.players.filter(x=>x.tId===state.userTeamId).map(x=>x.slot), -1) + 1;
+                alert(`Оренду успішно оформлено! ${t.n} прийняли вашу пропозицію.`);
+                closeModal('loan-modal'); renderSquad(); renderMarket(); saveGame();
+            } else {
+                alert(`${t.n} відхилив пропозицію. Вони вимагають щонайменше ${reqWage}% зарплати гравця.`);
+            }
+        }
+
+        // ПРОДАЖ / ЗДАЧА В ОРЕНДУ (Користувач виставляє)
+        let playerToSell = null;
+        let listType = 'sell';
+        function openSellModal(id, type) {
+            playerToSell = state.players.find(p => p.id === id);
+            if(state.players.filter(p=>p.tId===state.userTeamId).length <= 14) return alert("У вас занадто мало гравців у складі! Мінімум 14.");
+            if(playerToSell.slot < 11) return alert("Спочатку перемістіть гравця на лаву запасних (у вкладці Склад), щоб виставити його на трансфер!");
+            if(playerToSell.loanedFrom !== null) return alert("Ви не можете продавати орендованих гравців!");
+            
+            listType = type;
+            if (type === 'sell') {
+                $('sell-modal-title').innerText = `Продати ${playerToSell.name}`;
+                $('sell-modal-info').innerText = `Рекомендована ціна: $${playerToSell.price.toFixed(1)}M (OVR: ${playerToSell.r})`;
+                $('sell-price-input').value = playerToSell.price.toFixed(1);
+            } else {
+                $('sell-modal-title').innerText = `Здати в оренду ${playerToSell.name}`;
+                let recFee = (playerToSell.price * 0.15).toFixed(1);
+                $('sell-modal-info').innerText = `Рекомендована плата за оренду: $${recFee}M (OVR: ${playerToSell.r})`;
+                $('sell-price-input').value = recFee;
+            }
+            $('sell-modal').style.display = 'flex';
+        }
+
+        function confirmListPlayer() {
+            let ask = parseFloat($('sell-price-input').value);
+            if (listType === 'sell' && ask > 25) return alert("Максимальна ціна продажу в УПЛ - $25.0M!");
+            if (listType === 'loan' && ask > 10) return alert("Максимальна плата за оренду - $10.0M!");
+            state.listedPlayers.push({ id: playerToSell.id, ask: ask, type: listType });
+            closeModal('sell-modal'); renderMarket(); saveGame();
+        }
+
+        function cancelListing(id) {
+            state.listedPlayers = state.listedPlayers.filter(lp => lp.id !== id);
+            renderMarket(); saveGame();
+        }
+
+        function acceptOffer(idx) {
+            let off = state.offers[idx];
+            let p = state.players.find(x => x.id === off.pId);
+            let t = DB.teams.find(x => x.id === off.from);
+            
+            state.budget += off.val;
+            if (off.type === 'loan') { p.loanedFrom = state.userTeamId; p.tId = off.from; } 
+            else { p.loanedFrom = null; p.tId = off.from; }
+            
+            p.slot = Math.max(...state.players.filter(x=>x.tId===off.from).map(x=>x.slot), -1) + 1;
+            
+            state.listedPlayers = state.listedPlayers.filter(lp => lp.id !== p.id);
+            state.offers.splice(idx, 1);
+            
+            if (state.capId === p.id) state.capId = null;
+            if (state.match && state.match.injuredId === p.id) state.match.injuredId = null;
+            
+            alert(`Успішно! ${p.name} перейшов у ${t.n} за $${off.val.toFixed(1)}M.`);
+            renderMarket(); renderSquad(); saveGame();
+        }
+
+        function declineOffer(idx) {
+            state.offers.splice(idx, 1);
+            renderMarket(); saveGame();
         }
 
         /* ENGINE FINAL */
         let eng = { speed: 1, dots: [], ball: {x:50, y:50, vx:0, vy:0, owner:null, lastTouch:null}, state: 'kickoff', teamBall: 'h', half: 1, pendingScorer: null };
         
         function toggleSpeed() {
-            eng.speed *= 2; 
-            if(eng.speed > 8) eng.speed = 1; 
-            $('speed-btn').innerText = eng.speed + 'x'; 
+            eng.speed *= 2; if(eng.speed > 8) eng.speed = 1; $('speed-btn').innerText = eng.speed + 'x'; 
             if(state.match.playing) { pauseSim(); resumeSim(); }
         }
 
@@ -615,8 +920,7 @@
             $('m-score-h').innerText='0'; $('m-score-a').innerText='0'; $('m-time').innerText="0'"; $('m-events').innerHTML="";
             $('main-nav').style.display='none'; $('game-ui').style.display='none'; $('match-screen').style.display='flex';
             eng.half = 1; eng.speed = 1; $('speed-btn').innerText = '1x';
-            initEngine(); 
-            resumeSim();
+            initEngine(); resumeSim();
         }
 
         function getGoalX(team) { return (team==='h' ? (eng.half===1?100:0) : (eng.half===1?0:100)); }
@@ -629,29 +933,22 @@
             let aTactic = state.match.aId === state.userTeamId ? state.tactic : (state.match.aId === 11 ? '4-2-3-1' : '4-1-4-1');
 
             let myTeamId = state.userTeamId;
-            let hClass = state.match.hId === myTeamId ? 'dot-my' : 'dot-enemy';
-            let aClass = state.match.aId === myTeamId ? 'dot-my' : 'dot-enemy';
+            let hClass = state.match.hId === myTeamId ? 'dot-my' : 'dot-enemy'; let aClass = state.match.aId === myTeamId ? 'dot-my' : 'dot-enemy';
 
             if(eng.half === 1) {
-                eng.dots = [];
-                let html = '';
+                eng.dots = []; let html = '';
                 for(let i=0; i<11; i++) {
-                    let h_fX = 100 - formations[hTactic][i].t;
-                    let h_fY = formations[hTactic][i].l;
+                    let h_fX = 100 - formations[hTactic][i].t; let h_fY = formations[hTactic][i].l;
                     html += `<div class="dot ${hClass}" id="dh${i}">${hP[i]?hP[i].num:''}</div>`; 
                     eng.dots.push({ id:`dh${i}`, t:'h', p:hP[i], bx:h_fX, by:h_fY, x:h_fX, y:h_fY, el:null, cd: 0 });
                 }
                 for(let i=0; i<11; i++) {
-                    let a_fX = formations[aTactic][i].t;
-                    let a_fY = formations[aTactic][i].l;
+                    let a_fX = formations[aTactic][i].t; let a_fY = formations[aTactic][i].l;
                     html += `<div class="dot ${aClass}" id="da${i}">${aP[i]?aP[i].num:''}</div>`;
                     eng.dots.push({ id:`da${i}`, t:'a', p:aP[i], bx:a_fX, by:a_fY, x:a_fX, y:a_fY, el:null, cd: 0 });
                 }
-                $('sim-dots').innerHTML = html; 
-                eng.dots.forEach(d=>d.el = $(d.id));
-            } else {
-                eng.dots.forEach(d => { d.bx = 100 - d.bx; d.cd = 0; });
-            }
+                $('sim-dots').innerHTML = html; eng.dots.forEach(d=>d.el = $(d.id));
+            } else { eng.dots.forEach(d => { d.bx = 100 - d.bx; d.cd = 0; }); }
             resetPitch(eng.half===1 ? 'h' : 'a');
         }
 
@@ -663,90 +960,59 @@
                 else if (d.t === 'a' && eng.half === 1) d.x = Math.max(d.bx, 52);
                 else if (d.t === 'h' && eng.half === 2) d.x = Math.max(d.bx, 52);
                 else if (d.t === 'a' && eng.half === 2) d.x = Math.min(d.bx, 48);
-                
-                d.y = d.by; d.cd = 0; 
-                updateElem(d.el, d.x, d.y); 
+                d.y = d.by; d.cd = 0; updateElem(d.el, d.x, d.y); 
             });
             updateElem($('sim-ball'), eng.ball.x, eng.ball.y);
         }
 
         function updateElem(el, x, y) { el.style.left=x+'%'; el.style.top=y+'%'; }
 
-        function pauseSim() {
-            state.match.playing = false;
-            clearInterval(mTimers.tick); clearInterval(mTimers.phys);
-        }
+        function pauseSim() { state.match.playing = false; clearInterval(mTimers.tick); clearInterval(mTimers.phys); }
 
         function resumeSim() {
             state.match.playing = true;
             mTimers.tick = setInterval(()=>{ 
                 if(eng.state !== 'var' && eng.state !== 'penalty' && eng.state !== 'check') {
-                    state.match.min++; 
-                    if(state.match.min <= 90) {
-                        $('m-time').innerText = state.match.min + "'";
-                    } else {
-                        $('m-time').innerText = "90+" + (state.match.min - 90) + "'";
-                    }
+                    state.match.min++; $('m-time').innerText = state.match.min <= 90 ? state.match.min + "'" : "90+" + (state.match.min - 90) + "'";
                     checkMatchEvents(); 
                 }
             }, 1200 / eng.speed); 
-            mTimers.phys = setInterval(() => {
-                for(let i=0; i<eng.speed; i++) physTick();
-            }, 16); 
+            mTimers.phys = setInterval(() => { for(let i=0; i<eng.speed; i++) physTick(); }, 16); 
         }
 
         function physTick() {
             if(eng.state === 'goal' || eng.state === 'var' || eng.state === 'penalty' || eng.state === 'check') return;
-            let hC = DB.teams.find(x=>x.id===state.match.hId).coef, aC = DB.teams.find(x=>x.id===state.match.aId).coef;
             
             if(eng.state === 'kickoff') {
                 let cm = eng.dots.filter(d=>d.t===eng.teamBall && d.bx>40 && d.bx<60);
-                if(cm.length>0) eng.ball.owner = cm[0]; eng.state = 'play';
+                if(cm.length>0) { eng.ball.owner = cm[0]; eng.state = 'play'; }
             }
 
-            let closestH = null, closestA = null;
-            let minDistH = 999, minDistA = 999;
+            let closestH = null, closestA = null, minDistH = 999, minDistA = 999;
             eng.dots.forEach(d => {
                 if (d.p && d.p.pos === 'ВР') return; 
-                let targetX = eng.ball.owner ? eng.ball.owner.x : eng.ball.x;
-                let targetY = eng.ball.owner ? eng.ball.owner.y : eng.ball.y;
+                let targetX = eng.ball.owner ? eng.ball.owner.x : eng.ball.x; let targetY = eng.ball.owner ? eng.ball.owner.y : eng.ball.y;
                 let dist = Math.hypot(d.x - targetX, d.y - targetY);
                 if (d.t === 'h' && dist < minDistH) { minDistH = dist; closestH = d; }
                 if (d.t === 'a' && dist < minDistA) { minDistA = dist; closestA = d; }
             });
 
             if(eng.ball.owner) { 
-                eng.ball.lastTouch = eng.ball.owner;
-                eng.ball.x = eng.ball.owner.x + (getGoalX(eng.ball.owner.t) === 100 ? 1.5 : -1.5); eng.ball.y = eng.ball.owner.y; 
-                eng.ball.vx=0; eng.ball.vy=0;
+                eng.ball.lastTouch = eng.ball.owner; eng.ball.x = eng.ball.owner.x + (getGoalX(eng.ball.owner.t) === 100 ? 1.5 : -1.5); eng.ball.y = eng.ball.owner.y; eng.ball.vx=0; eng.ball.vy=0;
             } else {
-                eng.ball.x += eng.ball.vx; eng.ball.y += eng.ball.vy;
-                eng.ball.vx *= 0.99; eng.ball.vy *= 0.99; 
-                
-                if(eng.ball.y <= 1 || eng.ball.y >= 99) { 
-                    eng.ball.vy *= -1; 
-                    if(eng.ball.y <= 1) eng.ball.y=2; if(eng.ball.y >= 99) eng.ball.y=98; 
-                }
-                
+                eng.ball.x += eng.ball.vx; eng.ball.y += eng.ball.vy; eng.ball.vx *= 0.99; eng.ball.vy *= 0.99; 
+                if(eng.ball.y <= 1 || eng.ball.y >= 99) { eng.ball.vy *= -1; eng.ball.y = eng.ball.y<=1?2:98; }
                 if(eng.ball.x <= 0 || eng.ball.x >= 100) {
                     if(eng.ball.y >= 38 && eng.ball.y <= 62) {
                         let defendTeam = eng.ball.x <= 0 ? (eng.half===1?'h':'a') : (eng.half===1?'a':'h');
                         let attackTeam = defendTeam === 'h' ? 'a' : 'h';
                         let gk = eng.dots.find(d => d.t === defendTeam && d.p && d.p.pos === 'ВР');
                         let saveChance = gk ? (gk.p.r * 1.05) : 40;
-                        
                         if(rand(1, 100) < saveChance) {
-                            eng.ball.vx *= -0.8;
-                            eng.ball.vy = (rand(0,1)===0?-1:1) * rand(1,4);
-                            if(eng.ball.x <= 0) eng.ball.x = 2; else eng.ball.x = 98;
+                            eng.ball.vx *= -0.8; eng.ball.vy = (rand(0,1)===0?-1:1) * rand(1,4); eng.ball.x = eng.ball.x <= 0 ? 2 : 98;
                             logEvent(`🧤 Сейв воротаря (${gk ? gk.p.name.split(' ').pop() : 'ВР'})!`, '', defendTeam);
-                        } else {
-                            attemptGoal(attackTeam);
-                        }
-                    } else {
-                        eng.ball.vx *= -1; 
-                        if(eng.ball.x <= 0) eng.ball.x=1; if(eng.ball.x >= 100) eng.ball.x=99;
-                    }
+                        } else { attemptGoal(attackTeam); }
+                    } else { eng.ball.vx *= -1; eng.ball.x = eng.ball.x<=0?1:99; }
                 }
             }
             updateElem($('sim-ball'), eng.ball.x, eng.ball.y);
@@ -754,9 +1020,7 @@
             eng.dots.forEach(d => {
                 if(d.cd > 0) d.cd--;
                 let tx = d.bx, ty = d.by, isGK = d.p && d.p.pos === 'ВР';
-                let tCoef = d.t==='h'?hC:aC;
-                let goalX = getGoalX(d.t);
-                let isClosest = (d === closestH || d === closestA);
+                let goalX = getGoalX(d.t); let isClosest = (d === closestH || d === closestA);
 
                 if(eng.state === 'play') {
                     if(isGK) {
@@ -766,62 +1030,41 @@
                         tx = goalX; ty = 50;
                         if(Math.abs(d.x - goalX) < 35 && d.cd === 0 && rand(1, 100) <= (d.p.r * 0.45)) { 
                             eng.ball.owner = null; let cornerY = rand(0,1)===0 ? 42 : 58;
-                            eng.ball.vx = (goalX - d.x) * 0.04; eng.ball.vy = (cornerY - d.y) * 0.04;
-                            d.cd = 40; 
+                            eng.ball.vx = (goalX - d.x) * 0.04; eng.ball.vy = (cornerY - d.y) * 0.04; d.cd = 40; 
                             logEvent(`Удар по воротах!`, '', d.t);
                         } else if(rand(1, 200) < (d.p.r * 0.45) && d.cd === 0) { 
                             let mates = eng.dots.filter(m=>m.t===d.t && m!==d && !m.p.pos.includes('ВР') && ((goalX===100 && m.x>d.x-5) || (goalX===0 && m.x<d.x+5)));
                             if(mates.length>0) { 
-                                let trg = mates[rand(0,mates.length-1)]; 
-                                let dist = Math.hypot(trg.x-d.x, trg.y-d.y);
-                                let passSpeed = 0.014 + (dist * 0.0001); 
-                                eng.ball.owner=null; eng.ball.vx=(trg.x-d.x)*passSpeed; eng.ball.vy=(trg.y-d.y)*passSpeed; 
-                                d.cd = 20; 
+                                let trg = mates[rand(0,mates.length-1)]; let dist = Math.hypot(trg.x-d.x, trg.y-d.y);
+                                let passSpeed = 0.014 + (dist * 0.0001); eng.ball.owner=null; eng.ball.vx=(trg.x-d.x)*passSpeed; eng.ball.vy=(trg.y-d.y)*passSpeed; d.cd = 20; 
                             }
                         }
                     } else if(!eng.ball.owner) {
                         if (isClosest || Math.hypot(d.x-eng.ball.x, d.y-eng.ball.y) < 5) {
                             tx = eng.ball.x; ty = eng.ball.y;
                             if(Math.hypot(d.x-eng.ball.x, d.y-eng.ball.y) < 2.5 && d.cd === 0) eng.ball.owner = d;
-                        } else {
-                            tx = d.bx; ty = d.by;
-                        }
+                        } else { tx = d.bx; ty = d.by; }
                     } else if(eng.ball.owner && eng.ball.owner.t !== d.t) {
                         let distToOwner = Math.hypot(d.x-eng.ball.owner.x, d.y-eng.ball.owner.y);
                         if ((isClosest && distToOwner < 30) || distToOwner < 5) {
                             tx = eng.ball.owner.x; ty = eng.ball.owner.y;
-                            if(distToOwner < 2.5 && rand(1, 100) < (d.p.r * 0.25) && d.cd === 0) { 
-                                eng.ball.owner.cd = 40; 
-                                eng.ball.owner = d; 
-                                d.cd = 10; 
-                            }
-                        } else {
-                            tx = d.bx + (goalX===100?-15:15); ty = d.by;
-                        }
-                    } else if(eng.ball.owner && eng.ball.owner.t === d.t) {
-                        tx = d.bx + (goalX===100?20:-20); ty = d.by;
-                    }
+                            if(distToOwner < 2.5 && rand(1, 100) < (d.p.r * 0.25) && d.cd === 0) { eng.ball.owner.cd = 40; eng.ball.owner = d; d.cd = 10; }
+                        } else { tx = d.bx + (goalX===100?-15:15); ty = d.by; }
+                    } else if(eng.ball.owner && eng.ball.owner.t === d.t) { tx = d.bx + (goalX===100?20:-20); ty = d.by; }
                 }
-                
-                d.x += (tx - d.x) * 0.0035; d.y += (ty - d.y) * 0.0035; 
-                updateElem(d.el, d.x, d.y);
+                d.x += (tx - d.x) * 0.0035; d.y += (ty - d.y) * 0.0035; updateElem(d.el, d.x, d.y);
             });
         }
 
         function attemptGoal(team) {
-            eng.state = 'check';
-            eng.pendingScorer = eng.ball.lastTouch ? eng.ball.lastTouch.p : null;
-            if(rand(1, 100) <= 30) triggerVAR(team);
-            else triggerGoal(team);
+            eng.state = 'check'; eng.pendingScorer = eng.ball.lastTouch ? eng.ball.lastTouch.p : null;
+            if(rand(1, 100) <= 30) triggerVAR(team); else triggerGoal(team);
         }
 
         function triggerVAR(team) {
-            pauseSim();
-            $('goal-alert').innerText = "ВАР..."; $('goal-alert').style.color = "white"; $('goal-alert').style.display='block';
-            logEvent(`🔍 ВАР: Перевірка голу...`, 'var', 'n');
+            pauseSim(); $('goal-alert').innerText = "ВАР..."; $('goal-alert').style.color = "white"; $('goal-alert').style.display='block'; logEvent(`🔍 ВАР: Перевірка голу...`, 'var', 'n');
             setTimeout(() => {
-                if(rand(1, 100) <= 70) {
-                    $('goal-alert').style.display='none'; triggerGoal(team);
+                if(rand(1, 100) <= 70) { $('goal-alert').style.display='none'; triggerGoal(team);
                 } else {
                     $('goal-alert').innerText = "ОФСАЙД"; $('goal-alert').style.color = "red";
                     let scorerStr = eng.pendingScorer ? `${eng.pendingScorer.name.split(' ').pop()} ${eng.pendingScorer.num}` : "Гравець";
@@ -833,20 +1076,15 @@
 
         function triggerGoal(team) {
             if(team === 'h') { state.match.hScore++; $('m-score-h').innerText=state.match.hScore; } else { state.match.aScore++; $('m-score-a').innerText=state.match.aScore; }
-            
-            let scorerStr = "Автогол";
-            if(eng.pendingScorer) scorerStr = `${eng.pendingScorer.name.split(' ').pop()} ${eng.pendingScorer.num}`;
+            let scorerStr = eng.pendingScorer ? `${eng.pendingScorer.name.split(' ').pop()} ${eng.pendingScorer.num}` : "Автогол";
             logEvent(`⚽ Гол! ${scorerStr}`, 'goal', team);
-            
             $('goal-alert').innerText = "ГОООЛ!"; $('goal-alert').style.color = "gold"; $('goal-alert').style.display='block';
             if(navigator.vibrate) navigator.vibrate([300, 100, 300]);
-            pauseSim();
-            setTimeout(() => { $('goal-alert').style.display='none'; resetPitch(team==='h'?'a':'h'); resumeSim(); }, 3000 / eng.speed);
+            pauseSim(); setTimeout(() => { $('goal-alert').style.display='none'; resetPitch(team==='h'?'a':'h'); resumeSim(); }, 3000 / eng.speed);
         }
 
         function triggerPenalty(team) {
-            eng.state = 'penalty'; pauseSim();
-            let foulTeam = team === 'h' ? 'a' : 'h';
+            eng.state = 'penalty'; pauseSim(); let foulTeam = team === 'h' ? 'a' : 'h';
             logEvent(`🛑 ПЕНАЛЬТІ у ворота ${foulTeam==='h'?'Господарів':'Гостей'}!`, 'r', foulTeam);
             let defendGoalX = getGoalX(foulTeam);
             eng.dots.forEach(d=>{ d.x = d.t===team ? 50 : (defendGoalX===0?30:70); d.y=50; updateElem(d.el, d.x, d.y); });
@@ -854,101 +1092,58 @@
             let gk = eng.dots.find(d=>d.t!==team && d.p.pos==='ВР'); if(gk) { gk.x=defendGoalX===0?2:98; gk.y=50; updateElem(gk.el, gk.x, gk.y); }
             let kicker = eng.dots.find(d=>d.t===team && d.p.pos==='НП'); if(kicker) { kicker.x=defendGoalX===0?20:80; kicker.y=50; eng.ball.owner=kicker; eng.ball.lastTouch=kicker; updateElem(kicker.el, kicker.x, kicker.y); }
             updateElem($('sim-ball'), eng.ball.x, eng.ball.y);
-            
-            setTimeout(() => {
-                eng.ball.owner=null; eng.ball.vx = (defendGoalX===0?-15:15)*0.08; eng.ball.vy = rand(-1,1)*0.02;
-                resumeSim(); eng.state='play';
-            }, 2000 / eng.speed);
+            setTimeout(() => { eng.ball.owner=null; eng.ball.vx = (defendGoalX===0?-15:15)*0.08; eng.ball.vy = rand(-1,1)*0.02; resumeSim(); eng.state='play'; }, 2000 / eng.speed);
         }
 
         function logEvent(msg, type, team) {
             let cl = type==='goal'?'ev-goal':(type==='y'?'ev-y':(type==='r'?'ev-r':(type==='inj'?'ev-inj':(type==='var'?'ev-var':''))));
-            
-            let alignCl = 'ev-n';
-            if(team === 'h') alignCl = state.match.hId === state.userTeamId ? 'ev-h' : 'ev-a';
-            if(team === 'a') alignCl = state.match.aId === state.userTeamId ? 'ev-h' : 'ev-a';
-            if(team === 'n') alignCl = 'ev-n';
-            
+            let alignCl = team === 'n' ? 'ev-n' : (team === 'h' ? (state.match.hId === state.userTeamId ? 'ev-h' : 'ev-a') : (state.match.aId === state.userTeamId ? 'ev-h' : 'ev-a'));
             let html = `<div class="event-line ${alignCl}">`;
             if(alignCl === 'ev-a') html += `<span class="ev-text ${cl}">${msg}</span><span class="ev-min">${state.match.min}'</span>`;
-            else html += `<span class="ev-min">${state.match.min}'</span><span class="ev-text ${cl}">${msg}</span>`;
-            html += `</div>`;
-            
-            let currentLogs = $('m-events').innerHTML;
-            if (currentLogs.split('</div>').length > 15) {
-                currentLogs = currentLogs.split('</div>').slice(0, 15).join('</div>') + '</div>';
-            }
-            
+            else html += `<span class="ev-min">${state.match.min}'</span><span class="ev-text ${cl}">${msg}</span>`; html += `</div>`;
+            let currentLogs = $('m-events').innerHTML; if (currentLogs.split('</div>').length > 15) currentLogs = currentLogs.split('</div>').slice(0, 15).join('</div>') + '</div>';
             $('m-events').innerHTML = html + currentLogs;
         }
 
         function checkMatchEvents() {
             state.match.otherScores.forEach(om => {
                 if(rand(1,100) > 96) { 
-                    let hC = DB.teams.find(x=>x.id===om.h).coef;
-                    let aC = DB.teams.find(x=>x.id===om.a).coef;
-                    let totalC = hC + aC;
-                    if(Math.random() < (hC / totalC)) om.hS++; else om.aS++;
+                    let hC = DB.teams.find(x=>x.id===om.h).coef, aC = DB.teams.find(x=>x.id===om.a).coef;
+                    if(Math.random() < (hC / (hC+aC))) om.hS++; else om.aS++;
                 }
             });
-            
             let rFoul = rand(1, 150);
             if(rFoul <= 3) {
-                let team = rand(0,1)===0?'h':'a';
-                let pList = state.players.filter(p=>p.tId===(team==='h'?state.match.hId:state.match.aId) && p.slot<11);
+                let team = rand(0,1)===0?'h':'a'; let pList = state.players.filter(p=>p.tId===(team==='h'?state.match.hId:state.match.aId) && p.slot<11);
                 let rndP = pList[rand(0, pList.length-1)];
                 if(rFoul === 1) logEvent(`🟨 Жовта картка (${rndP.name.split(' ').pop()})`, "y", team);
                 if(rFoul === 2) logEvent(`🟥 ЧЕРВОНА картка! (${rndP.name.split(' ').pop()})`, "r", team);
                 if(rFoul === 3) triggerPenalty(team==='h'?'a':'h');
             }
-            
             let injChance = state.press === 0 ? 4000 : (state.press === 1 ? 2500 : 1200); 
             if (rand(1, injChance) === 1 && !state.match.injuredId) { 
                 let pList = state.players.filter(p=>p.tId===state.userTeamId && p.slot<11);
                 if(pList.length>0) {
                     let injP = pList[rand(0, pList.length-1)]; injP.inj = true; state.match.injuredId = injP.id;
                     logEvent(`🚑 ТРАВМА! ${injP.name.split(' ').pop()} не може продовжити!`, "inj", state.userTeamId===state.match.hId?'h':'a');
-                    pauseForTactics(); 
-                    $('injury-warning').style.display='block';
+                    pauseForTactics(); $('injury-warning').style.display='block';
                 }
             }
-            
-            if(state.match.min === 45 && !state.match.isHT) {
-                state.match.isHT = true; pauseSim(); showHTModal('Перерва');
-            }
-            if(state.match.min === 90 && state.match.addedTime === null) {
-                state.match.addedTime = rand(1,6); logEvent(`Суддя додав ${state.match.addedTime} хв.`, "var", "n");
-            }
-            if(state.match.addedTime !== null && state.match.min >= 90 + state.match.addedTime) {
-                pauseSim(); showHTModal('Матч завершено');
-            }
+            if(state.match.min === 45 && !state.match.isHT) { state.match.isHT = true; pauseSim(); showHTModal('Перерва'); }
+            if(state.match.min === 90 && state.match.addedTime === null) { state.match.addedTime = rand(1,6); logEvent(`Суддя додав ${state.match.addedTime} хв.`, "var", "n"); }
+            if(state.match.addedTime !== null && state.match.min >= 90 + state.match.addedTime) { pauseSim(); showHTModal('Матч завершено'); }
         }
 
-        function pauseForTactics() {
-            pauseSim(); $('match-screen').style.display = 'none'; $('game-ui').style.display = 'flex';
-            $('btn-start-match').style.display = 'none'; $('btn-resume-match').style.display = 'block'; closeModal('ht-modal');
-            renderSquad();
-        }
-        function resumeMatchFromSubs() {
-            if(state.match.injuredId) return alert("Зробіть заміну травмованого гравця! Перетягніть його на лавку.");
-            $('game-ui').style.display='none'; $('match-screen').style.display='flex'; resumeSim();
-        }
-        function resumeMatchFromHT() { 
-            closeModal('ht-modal'); 
-            eng.half = 2;
-            initEngine(); 
-            resumeSim(); 
-        }
+        function pauseForTactics() { pauseSim(); $('match-screen').style.display = 'none'; $('game-ui').style.display = 'flex'; $('btn-start-match').style.display = 'none'; $('btn-resume-match').style.display = 'block'; closeModal('ht-modal'); renderSquad(); }
+        function resumeMatchFromSubs() { if(state.match.injuredId) return alert("Зробіть заміну травмованого гравця! Перетягніть його на лавку."); $('game-ui').style.display='none'; $('match-screen').style.display='flex'; resumeSim(); }
+        function resumeMatchFromHT() { closeModal('ht-modal'); eng.half = 2; initEngine(); resumeSim(); }
 
         function showHTModal(title) {
-            $('ht-title').innerText = title;
-            let h=''; state.match.otherScores.forEach(om => { h += `<div style="display:flex; justify-content:space-between; font-size:12px; border-bottom:1px solid #eee; padding:5px 0;"><span style="flex:1; text-align:right;">${DB.teams.find(x=>x.id===om.h).n}</span><span style="font-weight:bold; margin:0 10px;">${om.hS} - ${om.aS}</span><span style="flex:1;">${DB.teams.find(x=>x.id===om.a).n}</span></div>`; });
+            $('ht-title').innerText = title; let h=''; 
+            state.match.otherScores.forEach(om => { h += `<div style="display:flex; justify-content:space-between; font-size:12px; border-bottom:1px solid #eee; padding:5px 0;"><span style="flex:1; text-align:right;">${DB.teams.find(x=>x.id===om.h).n}</span><span style="font-weight:bold; margin:0 10px;">${om.hS} - ${om.aS}</span><span style="flex:1;">${DB.teams.find(x=>x.id===om.a).n}</span></div>`; });
             $('ht-scores').innerHTML = h;
-            if(title === 'Матч завершено') { 
-                $('btn-ht-sub').style.display = 'none'; $('btn-ht-resume').innerText = "Завершити матч"; $('btn-ht-resume').onclick = finishMatch; 
-            } else { 
-                $('btn-ht-sub').style.display = 'block'; $('btn-ht-resume').innerText = "Другий тайм"; $('btn-ht-resume').onclick = resumeMatchFromHT; 
-            }
+            if(title === 'Матч завершено') { $('btn-ht-sub').style.display = 'none'; $('btn-ht-resume').innerText = "Завершити матч"; $('btn-ht-resume').onclick = finishMatch; 
+            } else { $('btn-ht-sub').style.display = 'block'; $('btn-ht-resume').innerText = "Другий тайм"; $('btn-ht-resume').onclick = resumeMatchFromHT; }
             $('ht-modal').style.display = 'flex';
         }
 
@@ -964,12 +1159,41 @@
                 let isMe = (m.h===state.userTeamId || m.a===state.userTeamId);
                 let gH = isMe ? state.match.hScore : state.match.otherScores.find(o=>o.h===m.h).hS;
                 let gA = isMe ? state.match.aScore : state.match.otherScores.find(o=>o.h===m.h).aS;
+                m.hS = gH; m.aS = gA; 
                 sh.m++; sa.m++; if(gH>gA){sh.w++;sh.p+=3;sa.l++;} else if(gH<gA){sa.w++;sa.p+=3;sh.l++;} else {sh.d++;sa.d++;sh.p++;sa.p++;}
             });
+
+            // Логіка створення пропозицій після матчу
+            if(state.listedPlayers.length > 0) {
+                state.listedPlayers.forEach(lp => {
+                    if(!state.offers.find(o => o.pId === lp.id)) {
+                        if(rand(1, 100) <= 45) { // 45% шанс отримати пропозицію
+                            let potentialBuyers = DB.teams.filter(t => t.id !== state.userTeamId);
+                            let buyer = potentialBuyers[rand(0, potentialBuyers.length - 1)];
+                            let factor = (rand(80, 105) / 100);
+                            let offerPrice = parseFloat((lp.ask * factor).toFixed(1));
+                            if(lp.type === 'sell' && offerPrice > 25) offerPrice = 25.0; // Максимум
+                            state.offers.push({ pId: lp.id, from: buyer.id, val: offerPrice, type: lp.type });
+                        }
+                    }
+                });
+            }
             
             let restDays = rand(4,8); state.currentDate.setDate(state.currentDate.getDate() + restDays);
             state.players.forEach(p => { p.stam += (restDays*12); if(p.stam>100) p.stam=100; });
-            state.round++; updateDateUI(); renderSquad(); renderStandings(); nav('tab-table', document.querySelectorAll('.nav-item')[1]); renderProfile(); saveGame();
+            state.round++; 
+            
+            // Повернення з оренди в кінці сезону
+            if(state.round > 30) {
+                state.players.forEach(p => {
+                    if(p.loanedFrom !== null) { p.tId = p.loanedFrom; p.loanedFrom = null; }
+                });
+                alert("Сезон завершено! Усі орендовані гравці повернулися до своїх рідних клубів.");
+            }
+
+            updateDateUI(); renderSquad(); renderStandings(); renderProfile(); saveGame();
+            if (state.offers.length > 0) nav('tab-market', document.querySelectorAll('.nav-item')[2]);
+            else nav('tab-table', document.querySelectorAll('.nav-item')[1]);
         }
     </script>
 </body>
