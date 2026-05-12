@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>UPL Coach PRO - Ultra Real Engine (Transfer Update)</title>
+    <title>UPL Coach PRO - Ultra Real Engine (Goals Update)</title>
     <style>
         :root {
             --bg-color: #f0f4f8; --container-bg: #ffffff; --primary: #0f8574; --primary-dark: #0a6659;
@@ -129,8 +129,9 @@
         .list-row { display: flex; padding: 12px 10px; border-bottom: 1px solid var(--border); background: var(--container-bg); align-items: center; font-size: 14px; border-radius: 8px; margin-bottom: 5px; transition: 0.2s; }
         .t-pos { width: 20px; font-weight: bold; text-align: center; }
         .t-logo { width: 24px; height: 24px; object-fit: contain; margin: 0 8px; }
-        .t-name { flex: 1; font-weight: 500; font-size: 13px; }
-        .t-stat { width: 20px; text-align: center; font-size: 13px; }
+        .t-name { flex: 1; font-weight: 500; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .t-stat { width: 22px; text-align: center; font-size: 13px; flex-shrink: 0; }
+        
         .modal-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.6); display: none; z-index: 200; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: var(--container-bg); border-radius: 12px; width: 100%; max-width: 400px; padding: 20px; max-height: 80vh; overflow-y: auto; }
         .modal-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: var(--primary); text-align: center; }
@@ -226,9 +227,11 @@
         </div>
 
         <div id="tab-table" class="game-tab">
-            <div style="display:flex; padding:0 10px; font-size:12px; font-weight:bold; color:var(--text-muted);">
+            <div style="display:flex; padding:0 10px; font-size:12px; font-weight:bold; color:var(--text-muted); align-items:center;">
                 <span class="t-pos">#</span><span style="flex:1; margin-left:14px;">Клуб</span>
-                <span class="t-stat">І</span><span class="t-stat">В</span><span class="t-stat">Н</span><span class="t-stat">П</span><span class="t-stat" style="color:var(--text-main)">О</span>
+                <span class="t-stat">І</span><span class="t-stat">В</span><span class="t-stat">Н</span><span class="t-stat">П</span>
+                <span class="t-stat" style="width:35px">Г</span><span class="t-stat" style="width:25px">РГ</span>
+                <span class="t-stat" style="color:var(--text-main)">О</span>
             </div>
             <div id="table-list"></div>
         </div>
@@ -369,7 +372,6 @@
         </div>
     </div>
     
-    <!-- Модалка оренди (щоб взяти) -->
     <div class="modal-overlay" id="loan-modal" onclick="if(event.target==this)closeModal('loan-modal')">
         <div class="modal-content">
             <div class="modal-title">Оформлення оренди</div>
@@ -386,7 +388,6 @@
         </div>
     </div>
 
-    <!-- Нова модалка для продажу / здачі в оренду -->
     <div class="modal-overlay" id="sell-modal" onclick="if(event.target==this)closeModal('sell-modal')">
         <div class="modal-content">
             <div class="modal-title" id="sell-modal-title">Виставити на трансфер</div>
@@ -454,9 +455,9 @@
         
         window.showInfo = function(str) { alert(str.replace(/\|/g, '\n')); };
 
-        function saveGame() { localStorage.setItem('upl_save_pro_final3', JSON.stringify(state)); }
+        function saveGame() { localStorage.setItem('upl_save_pro_final4', JSON.stringify(state)); }
         function loadGame() {
-            let saved = localStorage.getItem('upl_save_pro_final3');
+            let saved = localStorage.getItem('upl_save_pro_final4');
             if(saved) {
                 state = JSON.parse(saved); state.currentDate = new Date(state.currentDate);
                 state.match.active = false; state.match.playing = false; 
@@ -465,12 +466,14 @@
                 if(!state.marketMode) state.marketMode = 'buy';
                 if(!state.listedPlayers) state.listedPlayers = [];
                 if(!state.offers) state.offers = [];
+                // Забезпечення зворотної сумісності для нових колонок
+                state.standings.forEach(s => { if(s.gs===undefined) s.gs=0; if(s.gc===undefined) s.gc=0; });
                 return true;
             } return false;
         }
 
         window.onload = () => {
-            if(localStorage.getItem('upl_logged_in_pro_final3') === 'true') {
+            if(localStorage.getItem('upl_logged_in_pro_final4') === 'true') {
                 $('login-screen').classList.remove('active-screen');
                 if(loadGame()) {
                     $('game-ui').style.display = 'flex';
@@ -481,7 +484,7 @@
 
         function login() { 
             let e = $('email').value, p = $('password').value; if(!e||!p) return;
-            localStorage.setItem('upl_logged_in_pro_final3', 'true');
+            localStorage.setItem('upl_logged_in_pro_final4', 'true');
             $('login-screen').classList.remove('active-screen'); initTeams(); 
         }
 
@@ -510,7 +513,7 @@
         function generateWorld() {
             let pid = 0;
             DB.teams.forEach(t => {
-                state.standings.push({ id: t.id, w:0, d:0, l:0, p:0, m:0 });
+                state.standings.push({ id: t.id, w:0, d:0, l:0, p:0, m:0, gs:0, gc:0 });
                 for(let i=0; i<SQUADS[t.id].length; i++) {
                     let pData = SQUADS[t.id][i];
                     let price = Math.max(0.5, Math.round((pData[2]-60)*0.5 * 10)/10);
@@ -545,7 +548,7 @@
 
         function confirmEndCareer() {
             if(confirm("Ви впевнені, що хочете завершити кар'єру? Увесь прогрес буде видалено!")) {
-                localStorage.removeItem('upl_save_pro_final3'); location.reload(); 
+                localStorage.removeItem('upl_save_pro_final4'); location.reload(); 
             }
         }
 
@@ -674,14 +677,29 @@
         }
 
         function renderStandings() {
-            state.standings.sort((a,b)=>b.p-a.p); let h='';
+            // Сортування за очками, потім за різницею голів
+            state.standings.sort((a,b) => {
+                if(b.p !== a.p) return b.p - a.p;
+                return (b.gs - b.gc) - (a.gs - a.gc);
+            });
+            
+            let h='';
             state.standings.forEach((s, i) => {
                 let t = DB.teams.find(x=>x.id===s.id); let c = 'transparent';
                 if(i===0 || i===1) c = '#0d5292'; else if(i===2 || i===3) c = '#7a152b'; else if(i===12 || i===13) c = '#c91010'; else if(i===14 || i===15) c = '#ff4d4d';
+                
+                let gd = s.gs - s.gc;
+                let gdColor = gd > 0 ? 'var(--success)' : (gd < 0 ? 'var(--danger)' : 'inherit');
+                let gdSign = gd > 0 ? '+' : '';
+
                 h += `<div class="list-row" style="flex-direction:column; align-items:stretch; border-left: 4px solid ${c}; padding: 10px;">
                         <div style="display:flex; align-items:center;">
                             <span class="t-pos">${i+1}</span><img src="img/${t.img}" class="t-logo" onerror="this.src=''">
-                            <span class="t-name">${t.n}</span><span class="t-stat">${s.m}</span><span class="t-stat">${s.w}</span><span class="t-stat">${s.d}</span><span class="t-stat">${s.l}</span><span class="t-stat" style="font-weight:bold;">${s.p}</span>
+                            <span class="t-name">${t.n}</span>
+                            <span class="t-stat">${s.m}</span><span class="t-stat">${s.w}</span><span class="t-stat">${s.d}</span><span class="t-stat">${s.l}</span>
+                            <span class="t-stat" style="width:35px; font-size:11px;">${s.gs}:${s.gc}</span>
+                            <span class="t-stat" style="width:25px; font-size:11px; font-weight:bold; color:${gdColor};">${gdSign}${gd}</span>
+                            <span class="t-stat" style="font-weight:bold;">${s.p}</span>
                         </div>
                         <div style="display:flex; justify-content:flex-end; margin-top:8px;">${getFormHtml(t.id)}</div>
                       </div>`;
@@ -691,6 +709,7 @@
                     <div class="leg-row"><div class="leg-box leg-lk"></div>Вихід - Ліга конференцій (Кваліфікація)</div>
                     <div class="leg-row"><div class="leg-box leg-re"></div>Прем'єр-ліга (Вибування)</div>
                     <div class="leg-row"><div class="leg-box leg-pro"></div>Пониження - Перша ліга</div>
+                    <div style="margin-top:8px; line-height:1.4;">При рівності очок команди сортуються за різницею забитих/пропущених голів.</div>
                   </div>`;
             $('table-list').innerHTML = h;
         }
@@ -703,8 +722,6 @@
             }); $('cal-list').innerHTML = h;
         }
 
-        // ---------- НОВА СИСТЕМА ТРАНСФЕРІВ ----------
-
         function toggleMarketMode(mode) {
             state.marketMode = mode;
             $('m-tab-buy').classList.toggle('active', mode === 'buy');
@@ -716,7 +733,6 @@
         function renderMarket() {
             $('lbl-budget').innerText = state.budget.toFixed(1);
             
-            // 1. Рендер Пропозицій (Offers)
             let offersH = '';
             state.offers.forEach((off, idx) => {
                 let p = state.players.find(x=>x.id === off.pId);
@@ -734,7 +750,6 @@
             });
             $('offers-container').innerHTML = offersH;
 
-            // 2. Рендер Ринку (Гравці)
             let teamSelect = $('filter-team');
             if (teamSelect.options.length <= 1) {
                 let th = '<option value="all">Оберіть команду</option>';
@@ -772,7 +787,7 @@
                               </div>`;
                     });
                 }
-            } else { // РЕЖИМ ПРОДАЖУ
+            } else { 
                 let players = state.players.filter(p => p.tId === state.userTeamId);
                 if (players.length === 0) h = '<div style="text-align:center; padding:20px;">Немає гравців</div>';
                 else {
@@ -802,7 +817,6 @@
             $('market-list').innerHTML = h;
         }
 
-        // КУПІВЛЯ (Користувач купує)
         function buyP(id, pr) {
             if(state.budget < pr) return alert("Недостатньо коштів!");
             if(confirm(`Придбати за $${pr.toFixed(1)}M?`)) {
@@ -812,7 +826,6 @@
             }
         }
 
-        // ОРЕНДА (Користувач бере в оренду)
         let activeLoanId = null;
         function openLoanModal(id) {
             activeLoanId = id; let p = state.players.find(x=>x.id===id); let t = DB.teams.find(x=>x.id===p.tId);
@@ -840,7 +853,6 @@
             }
         }
 
-        // ПРОДАЖ / ЗДАЧА В ОРЕНДУ (Користувач виставляє)
         let playerToSell = null;
         let listType = 'sell';
         function openSellModal(id, type) {
@@ -902,7 +914,6 @@
             renderMarket(); saveGame();
         }
 
-        /* ENGINE FINAL */
         let eng = { speed: 1, dots: [], ball: {x:50, y:50, vx:0, vy:0, owner:null, lastTouch:null}, state: 'kickoff', teamBall: 'h', half: 1, pendingScorer: null };
         
         function toggleSpeed() {
@@ -1160,19 +1171,23 @@
                 let gH = isMe ? state.match.hScore : state.match.otherScores.find(o=>o.h===m.h).hS;
                 let gA = isMe ? state.match.aScore : state.match.otherScores.find(o=>o.h===m.h).aS;
                 m.hS = gH; m.aS = gA; 
+
+                // ДОДАВАННЯ ГОЛІВ ДО ТАБЛИЦІ
+                sh.gs += gH; sh.gc += gA;
+                sa.gs += gA; sa.gc += gH;
+
                 sh.m++; sa.m++; if(gH>gA){sh.w++;sh.p+=3;sa.l++;} else if(gH<gA){sa.w++;sa.p+=3;sh.l++;} else {sh.d++;sa.d++;sh.p++;sa.p++;}
             });
 
-            // Логіка створення пропозицій після матчу
             if(state.listedPlayers.length > 0) {
                 state.listedPlayers.forEach(lp => {
                     if(!state.offers.find(o => o.pId === lp.id)) {
-                        if(rand(1, 100) <= 45) { // 45% шанс отримати пропозицію
+                        if(rand(1, 100) <= 45) {
                             let potentialBuyers = DB.teams.filter(t => t.id !== state.userTeamId);
                             let buyer = potentialBuyers[rand(0, potentialBuyers.length - 1)];
                             let factor = (rand(80, 105) / 100);
                             let offerPrice = parseFloat((lp.ask * factor).toFixed(1));
-                            if(lp.type === 'sell' && offerPrice > 25) offerPrice = 25.0; // Максимум
+                            if(lp.type === 'sell' && offerPrice > 25) offerPrice = 25.0;
                             state.offers.push({ pId: lp.id, from: buyer.id, val: offerPrice, type: lp.type });
                         }
                     }
@@ -1183,11 +1198,8 @@
             state.players.forEach(p => { p.stam += (restDays*12); if(p.stam>100) p.stam=100; });
             state.round++; 
             
-            // Повернення з оренди в кінці сезону
             if(state.round > 30) {
-                state.players.forEach(p => {
-                    if(p.loanedFrom !== null) { p.tId = p.loanedFrom; p.loanedFrom = null; }
-                });
+                state.players.forEach(p => { if(p.loanedFrom !== null) { p.tId = p.loanedFrom; p.loanedFrom = null; } });
                 alert("Сезон завершено! Усі орендовані гравці повернулися до своїх рідних клубів.");
             }
 
